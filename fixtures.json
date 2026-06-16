@@ -1,0 +1,578 @@
+[
+  {
+    "id": "A1",
+    "group": "A",
+    "home": "México",
+    "away": "África do Sul",
+    "date": "2026-06-11T16:00",
+    "venue": "Estádio Azteca"
+  },
+  {
+    "id": "A2",
+    "group": "A",
+    "home": "Coreia do Sul",
+    "away": "Chéquia",
+    "date": "2026-06-11T23:00",
+    "venue": "Estádio Akron"
+  },
+  {
+    "id": "A3",
+    "group": "A",
+    "home": "Chéquia",
+    "away": "África do Sul",
+    "date": "2026-06-18T13:00",
+    "venue": "Mercedes-Benz Stadium"
+  },
+  {
+    "id": "A4",
+    "group": "A",
+    "home": "México",
+    "away": "Coreia do Sul",
+    "date": "2026-06-18T22:00",
+    "venue": "Estádio Akron"
+  },
+  {
+    "id": "A5",
+    "group": "A",
+    "home": "Chéquia",
+    "away": "México",
+    "date": "2026-06-24T22:00",
+    "venue": "Estádio Azteca"
+  },
+  {
+    "id": "A6",
+    "group": "A",
+    "home": "África do Sul",
+    "away": "Coreia do Sul",
+    "date": "2026-06-24T22:00",
+    "venue": "Estádio BBVA"
+  },
+  {
+    "id": "B1",
+    "group": "B",
+    "home": "Canadá",
+    "away": "Bósnia",
+    "date": "2026-06-12T16:00",
+    "venue": "BMO Field"
+  },
+  {
+    "id": "B2",
+    "group": "B",
+    "home": "Catar",
+    "away": "Suíça",
+    "date": "2026-06-13T16:00",
+    "venue": "Levi's Stadium"
+  },
+  {
+    "id": "B3",
+    "group": "B",
+    "home": "Suíça",
+    "away": "Bósnia",
+    "date": "2026-06-18T16:00",
+    "venue": "SoFi Stadium"
+  },
+  {
+    "id": "B4",
+    "group": "B",
+    "home": "Canadá",
+    "away": "Catar",
+    "date": "2026-06-18T19:00",
+    "venue": "BC Place"
+  },
+  {
+    "id": "B5",
+    "group": "B",
+    "home": "Suíça",
+    "away": "Canadá",
+    "date": "2026-06-24T16:00",
+    "venue": "BC Place"
+  },
+  {
+    "id": "B6",
+    "group": "B",
+    "home": "Bósnia",
+    "away": "Catar",
+    "date": "2026-06-24T16:00",
+    "venue": "Lumen Field"
+  },
+  {
+    "id": "C1",
+    "group": "C",
+    "home": "Brasil",
+    "away": "Marrocos",
+    "date": "2026-06-13T19:00",
+    "venue": "MetLife Stadium"
+  },
+  {
+    "id": "C2",
+    "group": "C",
+    "home": "Haiti",
+    "away": "Escócia",
+    "date": "2026-06-13T22:00",
+    "venue": "Gillette Stadium"
+  },
+  {
+    "id": "C3",
+    "group": "C",
+    "home": "Escócia",
+    "away": "Marrocos",
+    "date": "2026-06-19T19:00",
+    "venue": "Gillette Stadium"
+  },
+  {
+    "id": "C4",
+    "group": "C",
+    "home": "Brasil",
+    "away": "Haiti",
+    "date": "2026-06-19T21:30",
+    "venue": "Lincoln Financial Field"
+  },
+  {
+    "id": "C5",
+    "group": "C",
+    "home": "Escócia",
+    "away": "Brasil",
+    "date": "2026-06-24T19:00",
+    "venue": "Hard Rock Stadium"
+  },
+  {
+    "id": "C6",
+    "group": "C",
+    "home": "Marrocos",
+    "away": "Haiti",
+    "date": "2026-06-24T19:00",
+    "venue": "Mercedes-Benz Stadium"
+  },
+  {
+    "id": "D1",
+    "group": "D",
+    "home": "EUA",
+    "away": "Paraguai",
+    "date": "2026-06-12T22:00",
+    "venue": "SoFi Stadium"
+  },
+  {
+    "id": "D2",
+    "group": "D",
+    "home": "Austrália",
+    "away": "Turquia",
+    "date": "2026-06-13T01:00",
+    "venue": "BC Place"
+  },
+  {
+    "id": "D3",
+    "group": "D",
+    "home": "EUA",
+    "away": "Austrália",
+    "date": "2026-06-19T16:00",
+    "venue": "Lumen Field"
+  },
+  {
+    "id": "D4",
+    "group": "D",
+    "home": "Turquia",
+    "away": "Paraguai",
+    "date": "2026-06-20T00:00",
+    "venue": "Levi's Stadium"
+  },
+  {
+    "id": "D5",
+    "group": "D",
+    "home": "Turquia",
+    "away": "EUA",
+    "date": "2026-06-25T23:00",
+    "venue": "SoFi Stadium"
+  },
+  {
+    "id": "D6",
+    "group": "D",
+    "home": "Paraguai",
+    "away": "Austrália",
+    "date": "2026-06-25T23:00",
+    "venue": "Levi's Stadium"
+  },
+  {
+    "id": "E1",
+    "group": "E",
+    "home": "Alemanha",
+    "away": "Curaçao",
+    "date": "2026-06-14T14:00",
+    "venue": "NRG Stadium"
+  },
+  {
+    "id": "E2",
+    "group": "E",
+    "home": "Costa do Marfim",
+    "away": "Equador",
+    "date": "2026-06-14T20:00",
+    "venue": "Lincoln Financial Field"
+  },
+  {
+    "id": "E3",
+    "group": "E",
+    "home": "Alemanha",
+    "away": "Costa do Marfim",
+    "date": "2026-06-20T17:00",
+    "venue": "BMO Field"
+  },
+  {
+    "id": "E4",
+    "group": "E",
+    "home": "Equador",
+    "away": "Curaçao",
+    "date": "2026-06-20T21:00",
+    "venue": "Arrowhead Stadium"
+  },
+  {
+    "id": "E5",
+    "group": "E",
+    "home": "Curaçao",
+    "away": "Costa do Marfim",
+    "date": "2026-06-25T17:00",
+    "venue": "Lincoln Financial Field"
+  },
+  {
+    "id": "E6",
+    "group": "E",
+    "home": "Equador",
+    "away": "Alemanha",
+    "date": "2026-06-25T17:00",
+    "venue": "MetLife Stadium"
+  },
+  {
+    "id": "F1",
+    "group": "F",
+    "home": "Holanda",
+    "away": "Japão",
+    "date": "2026-06-14T17:00",
+    "venue": "AT&T Stadium"
+  },
+  {
+    "id": "F2",
+    "group": "F",
+    "home": "Suécia",
+    "away": "Tunísia",
+    "date": "2026-06-14T23:00",
+    "venue": "Estádio BBVA"
+  },
+  {
+    "id": "F3",
+    "group": "F",
+    "home": "Holanda",
+    "away": "Suécia",
+    "date": "2026-06-20T14:00",
+    "venue": "NRG Stadium"
+  },
+  {
+    "id": "F4",
+    "group": "F",
+    "home": "Tunísia",
+    "away": "Japão",
+    "date": "2026-06-20T01:00",
+    "venue": "Estádio BBVA"
+  },
+  {
+    "id": "F5",
+    "group": "F",
+    "home": "Japão",
+    "away": "Suécia",
+    "date": "2026-06-25T20:00",
+    "venue": "AT&T Stadium"
+  },
+  {
+    "id": "F6",
+    "group": "F",
+    "home": "Tunísia",
+    "away": "Holanda",
+    "date": "2026-06-25T20:00",
+    "venue": "Arrowhead Stadium"
+  },
+  {
+    "id": "G1",
+    "group": "G",
+    "home": "Bélgica",
+    "away": "Egito",
+    "date": "2026-06-15T16:00",
+    "venue": "Lumen Field"
+  },
+  {
+    "id": "G2",
+    "group": "G",
+    "home": "Irã",
+    "away": "Nova Zelândia",
+    "date": "2026-06-15T22:00",
+    "venue": "SoFi Stadium"
+  },
+  {
+    "id": "G3",
+    "group": "G",
+    "home": "Bélgica",
+    "away": "Irã",
+    "date": "2026-06-21T16:00",
+    "venue": "SoFi Stadium"
+  },
+  {
+    "id": "G4",
+    "group": "G",
+    "home": "Nova Zelândia",
+    "away": "Egito",
+    "date": "2026-06-21T22:00",
+    "venue": "BC Place"
+  },
+  {
+    "id": "G5",
+    "group": "G",
+    "home": "Egito",
+    "away": "Irã",
+    "date": "2026-06-27T00:00",
+    "venue": "Lumen Field"
+  },
+  {
+    "id": "G6",
+    "group": "G",
+    "home": "Nova Zelândia",
+    "away": "Bélgica",
+    "date": "2026-06-27T00:00",
+    "venue": "BC Place"
+  },
+  {
+    "id": "H1",
+    "group": "H",
+    "home": "Espanha",
+    "away": "Cabo Verde",
+    "date": "2026-06-15T13:00",
+    "venue": "Mercedes-Benz Stadium"
+  },
+  {
+    "id": "H2",
+    "group": "H",
+    "home": "Arábia Saudita",
+    "away": "Uruguai",
+    "date": "2026-06-15T19:00",
+    "venue": "Hard Rock Stadium"
+  },
+  {
+    "id": "H3",
+    "group": "H",
+    "home": "Espanha",
+    "away": "Arábia Saudita",
+    "date": "2026-06-21T13:00",
+    "venue": "Mercedes-Benz Stadium"
+  },
+  {
+    "id": "H4",
+    "group": "H",
+    "home": "Uruguai",
+    "away": "Cabo Verde",
+    "date": "2026-06-21T19:00",
+    "venue": "Hard Rock Stadium"
+  },
+  {
+    "id": "H5",
+    "group": "H",
+    "home": "Cabo Verde",
+    "away": "Arábia Saudita",
+    "date": "2026-06-26T21:00",
+    "venue": "NRG Stadium"
+  },
+  {
+    "id": "H6",
+    "group": "H",
+    "home": "Uruguai",
+    "away": "Espanha",
+    "date": "2026-06-26T21:00",
+    "venue": "Estádio Akron"
+  },
+  {
+    "id": "I1",
+    "group": "I",
+    "home": "França",
+    "away": "Senegal",
+    "date": "2026-06-16T16:00",
+    "venue": "MetLife Stadium"
+  },
+  {
+    "id": "I2",
+    "group": "I",
+    "home": "Iraque",
+    "away": "Noruega",
+    "date": "2026-06-16T19:00",
+    "venue": "Gillette Stadium"
+  },
+  {
+    "id": "I3",
+    "group": "I",
+    "home": "França",
+    "away": "Iraque",
+    "date": "2026-06-22T18:00",
+    "venue": "Lincoln Financial Field"
+  },
+  {
+    "id": "I4",
+    "group": "I",
+    "home": "Noruega",
+    "away": "Senegal",
+    "date": "2026-06-22T21:00",
+    "venue": "MetLife Stadium"
+  },
+  {
+    "id": "I5",
+    "group": "I",
+    "home": "Noruega",
+    "away": "França",
+    "date": "2026-06-26T16:00",
+    "venue": "Gillette Stadium"
+  },
+  {
+    "id": "I6",
+    "group": "I",
+    "home": "Senegal",
+    "away": "Iraque",
+    "date": "2026-06-26T16:00",
+    "venue": "BMO Field"
+  },
+  {
+    "id": "J1",
+    "group": "J",
+    "home": "Argentina",
+    "away": "Argélia",
+    "date": "2026-06-16T22:00",
+    "venue": "Arrowhead Stadium"
+  },
+  {
+    "id": "J2",
+    "group": "J",
+    "home": "Áustria",
+    "away": "Jordânia",
+    "date": "2026-06-17T01:00",
+    "venue": "Levi's Stadium"
+  },
+  {
+    "id": "J3",
+    "group": "J",
+    "home": "Argentina",
+    "away": "Áustria",
+    "date": "2026-06-22T14:00",
+    "venue": "AT&T Stadium"
+  },
+  {
+    "id": "J4",
+    "group": "J",
+    "home": "Jordânia",
+    "away": "Argélia",
+    "date": "2026-06-23T00:00",
+    "venue": "Levi's Stadium"
+  },
+  {
+    "id": "J5",
+    "group": "J",
+    "home": "Jordânia",
+    "away": "Argentina",
+    "date": "2026-06-27T23:00",
+    "venue": "AT&T Stadium"
+  },
+  {
+    "id": "J6",
+    "group": "J",
+    "home": "Argélia",
+    "away": "Áustria",
+    "date": "2026-06-27T23:00",
+    "venue": "Arrowhead Stadium"
+  },
+  {
+    "id": "K1",
+    "group": "K",
+    "home": "Portugal",
+    "away": "RD Congo",
+    "date": "2026-06-17T14:00",
+    "venue": "NRG Stadium"
+  },
+  {
+    "id": "K2",
+    "group": "K",
+    "home": "Uzbequistão",
+    "away": "Colômbia",
+    "date": "2026-06-17T23:00",
+    "venue": "Estádio Azteca"
+  },
+  {
+    "id": "K3",
+    "group": "K",
+    "home": "Portugal",
+    "away": "Uzbequistão",
+    "date": "2026-06-23T14:00",
+    "venue": "NRG Stadium"
+  },
+  {
+    "id": "K4",
+    "group": "K",
+    "home": "Colômbia",
+    "away": "RD Congo",
+    "date": "2026-06-23T23:00",
+    "venue": "Estádio Akron"
+  },
+  {
+    "id": "K5",
+    "group": "K",
+    "home": "Colômbia",
+    "away": "Portugal",
+    "date": "2026-06-27T20:30",
+    "venue": "Hard Rock Stadium"
+  },
+  {
+    "id": "K6",
+    "group": "K",
+    "home": "RD Congo",
+    "away": "Uzbequistão",
+    "date": "2026-06-27T20:30",
+    "venue": "Mercedes-Benz Stadium"
+  },
+  {
+    "id": "L1",
+    "group": "L",
+    "home": "Inglaterra",
+    "away": "Croácia",
+    "date": "2026-06-17T17:00",
+    "venue": "AT&T Stadium"
+  },
+  {
+    "id": "L2",
+    "group": "L",
+    "home": "Gana",
+    "away": "Panamá",
+    "date": "2026-06-17T20:00",
+    "venue": "BMO Field"
+  },
+  {
+    "id": "L3",
+    "group": "L",
+    "home": "Inglaterra",
+    "away": "Gana",
+    "date": "2026-06-23T17:00",
+    "venue": "Gillette Stadium"
+  },
+  {
+    "id": "L4",
+    "group": "L",
+    "home": "Panamá",
+    "away": "Croácia",
+    "date": "2026-06-23T20:00",
+    "venue": "BMO Field"
+  },
+  {
+    "id": "L5",
+    "group": "L",
+    "home": "Panamá",
+    "away": "Inglaterra",
+    "date": "2026-06-27T18:00",
+    "venue": "MetLife Stadium"
+  },
+  {
+    "id": "L6",
+    "group": "L",
+    "home": "Croácia",
+    "away": "Gana",
+    "date": "2026-06-27T18:00",
+    "venue": "Lincoln Financial Field"
+  }
+]
