@@ -1,0 +1,4515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#050810" />
+<title>Bolão FIFA 2026 — Premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- ===== SCRIPTS NA ORDEM CORRETA ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
+<script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
+
+<style>
+  :root {
+    color-scheme: dark;
+    --bg-0: #050810;
+    --bg-1: #0a0f1c;
+    --bg-2: #111828;
+    --bg-3: #1a2238;
+    --line: rgba(255,255,255,0.08);
+    --line-strong: rgba(255,255,255,0.18);
+    --text: #ecf0f8;
+    --text-dim: #8a93a8;
+    --text-muted: #5b6478;
+    --gold: #d4af37;
+    --gold-bright: #f4d35e;
+    --gold-dim: #8b7320;
+    --neon: #00f0ff;
+    --neon-dim: #0099aa;
+    --green: #00d68a;
+    --red: #ff4d6d;
+    --orange: #ff9f43;
+    --purple: #a855f7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* FORÇA COR DOS INPUTS DE PLACAR */
+  input.score-input,
+  input.ko-score-input,
+  input.bk-edit-score,
+  input[type="number"].score-input,
+  input[type="number"].ko-score-input,
+  input[type="number"].bk-edit-score {
+    color: #f4d35e !important;
+    -webkit-text-fill-color: #f4d35e !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    background-image: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    opacity: 1 !important;
+    caret-color: #f4d35e !important;
+    forced-color-adjust: none !important;
+  }
+  input.score-input:focus,
+  input.ko-score-input:focus,
+  input.bk-edit-score:focus {
+    color: #f4d35e !important;
+    -webkit-text-fill-color: #f4d35e !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
+  }
+  @media (forced-colors: active) {
+    input.score-input,
+    input.ko-score-input,
+    input.bk-edit-score {
+      color: #f4d35e !important;
+      -webkit-text-fill-color: #f4d35e !important;
+      forced-color-adjust: none !important;
+    }
+  }
+  input[type="number"] {
+    color-scheme: dark;
+  }
+
+  html, body { background: var(--bg-0); color: var(--text); font-family: 'Manrope', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  body {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212,175,55,0.12), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(0,240,255,0.06), transparent 60%),
+      var(--bg-0);
+    background-attachment: fixed;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.4'/></svg>");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 1000;
+    mix-blend-mode: overlay;
+  }
+
+  button { font-family: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+  input, select { font-family: inherit; color: inherit; }
+  a { color: inherit; text-decoration: none; }
+
+  .app { min-height: 100vh; }
+
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(5,8,16,0.7);
+    border-bottom: 1px solid var(--line);
+  }
+  .header-inner {
+    max-width: 1400px; margin: 0 auto;
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand-logo {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 50%, var(--gold) 100%);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 24px rgba(212,175,55,0.4), inset 0 0 12px rgba(255,255,255,0.2);
+    font-size: 22px;
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1; }
+  .brand-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 1px;
+    background: linear-gradient(180deg, #fff 0%, #aab1c5 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+  .brand-sub { font-size: 10px; letter-spacing: 3px; color: var(--gold); margin-top: 2px; text-transform: uppercase; }
+
+  .header-nav { display: flex; gap: 4px; align-items: center; }
+  .nav-btn {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+    color: var(--text-dim);
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .nav-btn.active {
+    color: var(--gold-bright);
+    background: rgba(212,175,55,0.1);
+    box-shadow: inset 0 0 0 1px rgba(212,175,55,0.3);
+  }
+
+  .header-user {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 12px 6px 6px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 24px;
+    border: 1px solid var(--line);
+  }
+  .user-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--neon), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+  }
+  .user-name { font-size: 13px; font-weight: 600; }
+  .user-logout { font-size: 11px; color: var(--text-muted); padding: 0 4px; }
+  .user-logout:hover { color: var(--red); }
+
+  .main { max-width: 1400px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  .page-header { margin-bottom: 28px; }
+  .page-eyebrow {
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); font-weight: 700; margin-bottom: 8px;
+  }
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(34px, 5vw, 56px);
+    letter-spacing: 1px; line-height: 1;
+  }
+  .page-sub { color: var(--text-dim); margin-top: 8px; max-width: 600px; font-size: 14px; }
+
+  .welcome {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 32px 20px;
+    position: relative;
+  }
+  .welcome::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(212,175,55,0.15), transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(0,240,255,0.08), transparent 50%);
+    pointer-events: none;
+  }
+  .welcome-card {
+    max-width: 460px; width: 100%;
+    background: linear-gradient(180deg, rgba(26,34,56,0.7), rgba(10,15,28,0.9));
+    border: 1px solid var(--line-strong);
+    border-radius: 24px;
+    padding: 40px 32px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+    position: relative; z-index: 1;
+    backdrop-filter: blur(20px);
+  }
+  .welcome-trophy {
+    width: 80px; height: 80px; margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 50%, var(--gold) 100%);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    box-shadow: 0 20px 40px rgba(212,175,55,0.3), inset 0 0 20px rgba(255,255,255,0.2);
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 20px 40px rgba(212,175,55,0.3), inset 0 0 20px rgba(255,255,255,0.2); }
+    50% { box-shadow: 0 20px 60px rgba(212,175,55,0.5), inset 0 0 30px rgba(255,255,255,0.3); }
+  }
+  .welcome-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px; letter-spacing: 1px; text-align: center; line-height: 0.95;
+    background: linear-gradient(180deg, #fff, #c0c8dc);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+  .welcome-sub {
+    text-align: center; color: var(--gold); font-size: 11px; letter-spacing: 4px;
+    margin-top: 8px; text-transform: uppercase; font-weight: 700;
+  }
+  .welcome-desc {
+    text-align: center; color: var(--text-dim);
+    font-size: 13px; margin-top: 16px; line-height: 1.6;
+  }
+  .welcome-form { margin-top: 32px; display: flex; flex-direction: column; gap: 14px; }
+
+  .field-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--text-dim); font-weight: 700; margin-bottom: 6px;
+  }
+  .field-input {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    transition: all 0.15s;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+  }
+  .field-input::placeholder { color: var(--text-muted); }
+
+  .btn-primary {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
+    color: #1a1100;
+    font-weight: 800; font-size: 14px; letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 12px;
+    transition: all 0.15s;
+    box-shadow: 0 8px 20px rgba(212,175,55,0.2);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(212,175,55,0.4); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-ghost {
+    padding: 10px 18px;
+    border-radius: 10px;
+    color: var(--text-dim);
+    font-weight: 600; font-size: 13px;
+    transition: all 0.15s;
+    border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--line-strong); background: rgba(255,255,255,0.04); }
+
+  .btn-secondary {
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    font-size: 13px; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  .auth-toggle {
+    margin-top: 18px; text-align: center; font-size: 12px; color: var(--text-muted);
+  }
+  .auth-toggle button { color: var(--gold); font-weight: 700; }
+
+  .welcome-rules {
+    margin-top: 26px;
+    padding: 16px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  .welcome-rules-title {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 3px;
+    color: var(--gold); font-weight: 700; margin-bottom: 10px;
+  }
+  .welcome-rules-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; padding: 4px 0;
+    color: var(--text-dim);
+  }
+  .welcome-rules-row strong { color: var(--text); }
+
+  .countdown {
+    display: flex; justify-content: center; gap: 8px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .countdown-box {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 60px;
+    text-align: center;
+  }
+  .countdown-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px; font-weight: 700;
+    color: var(--gold-bright);
+    line-height: 1;
+  }
+  .countdown-label {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--text-muted); margin-top: 4px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: linear-gradient(180deg, rgba(26,34,56,0.5), rgba(10,15,28,0.5));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 20px;
+    position: relative; overflow: hidden;
+    transition: all 0.2s;
+  }
+  .stat-card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.5;
+  }
+  .stat-label {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); font-weight: 700;
+  }
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; line-height: 1; margin-top: 8px;
+    color: var(--gold-bright);
+  }
+  .stat-meta { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  .group-section { margin-bottom: 36px; }
+  .group-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .group-badge {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--bg-3), var(--bg-2));
+    border: 1px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; color: var(--gold-bright);
+    box-shadow: inset 0 0 12px rgba(212,175,55,0.1);
+  }
+  .group-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 1px;
+  }
+  .group-meta { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+
+  .match-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .match-card {
+    background: linear-gradient(180deg, rgba(26,34,56,0.4), rgba(10,15,28,0.4));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 90px 1fr auto 1fr;
+    align-items: center; gap: 12px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .match-card:hover { border-color: var(--line-strong); }
+  .match-card.locked {
+    opacity: 0.55;
+    background: rgba(10,15,28,0.6);
+  }
+  .match-card.locked::after {
+    content: '🔒';
+    position: absolute; top: 6px; right: 8px;
+    font-size: 11px;
+  }
+  .match-date {
+    font-size: 10px; line-height: 1.4;
+    color: var(--text-dim);
+  }
+  .match-date strong { color: var(--gold); display: block; font-size: 11px; }
+  .match-team {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 14px;
+  }
+  .match-team.right { justify-content: flex-end; text-align: right; }
+  .team-flag {
+    width: 32px; height: 22px; border-radius: 3px;
+    background-size: cover; background-position: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .team-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .match-score {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .score-input {
+    width: 42px; height: 42px;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px !important;
+    font-weight: 700;
+    background: rgba(0,0,0,0.4) !important;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    transition: all 0.15s;
+    color: #f4d35e !important;
+    -webkit-text-fill-color: #f4d35e !important;
+    caret-color: #f4d35e;
+    text-shadow: 0 0 6px rgba(212,175,55,0.2);
+  }
+  .score-input::placeholder {
+    color: rgba(255,255,255,0.25);
+    -webkit-text-fill-color: rgba(255,255,255,0.25);
+    font-size: 18px;
+  }
+  .score-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(0,0,0,0.6) !important;
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+  }
+  .score-input.filled {
+    background: rgba(212,175,55,0.08) !important;
+    border-color: rgba(212,175,55,0.4);
+  }
+  .score-input::-webkit-outer-spin-button,
+  .score-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .score-input[type=number] {
+    -moz-appearance: textfield;
+  }
+  .score-sep { color: var(--text-muted); font-weight: 700; }
+
+  .standings {
+    background: linear-gradient(180deg, rgba(26,34,56,0.5), rgba(10,15,28,0.5));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .standings-row {
+    display: grid;
+    grid-template-columns: 30px 2fr repeat(6, 30px);
+    gap: 8px;
+    padding: 10px 14px;
+    align-items: center;
+    font-size: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .standings-row:last-child { border-bottom: none; }
+  .standings-row.head {
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); font-weight: 700;
+    background: rgba(0,0,0,0.3);
+  }
+  .standings-row .pos {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px; color: var(--gold);
+  }
+  .standings-row.qualified { background: rgba(212,175,55,0.06); }
+  .standings-row.qualified .pos { color: var(--gold-bright); }
+  .standings-row.third { background: rgba(0,240,255,0.04); }
+  .standings-row .num { text-align: center; font-family: 'Space Mono', monospace; }
+
+  .bracket-wrap {
+    overflow-x: auto;
+    padding-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .bracket {
+    display: flex;
+    gap: 24px;
+    min-width: 1400px;
+    padding: 20px 0;
+  }
+  .bracket-round {
+    display: flex; flex-direction: column;
+    justify-content: space-around;
+    gap: 16px;
+    flex: 1;
+    min-width: 200px;
+  }
+  .bracket-round-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px; letter-spacing: 2px;
+    color: var(--gold); text-align: center;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .bracket-match {
+    background: rgba(26,34,56,0.6);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+  .bracket-match:hover { border-color: var(--gold-dim); }
+  .bracket-match.final-match {
+    border-color: var(--gold);
+    background: linear-gradient(180deg, rgba(212,175,55,0.1), rgba(26,34,56,0.6));
+    box-shadow: 0 0 20px rgba(212,175,55,0.2);
+  }
+  .bracket-team {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 4px;
+    border-radius: 6px;
+  }
+  .bracket-team.winner { background: rgba(212,175,55,0.1); color: var(--gold-bright); font-weight: 700; }
+  .bracket-team .flag-mini { font-size: 14px; }
+  .bracket-team .name { flex: 1; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bracket-team .score {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700; min-width: 20px; text-align: center;
+  }
+  .bracket-team .score-edit {
+    width: 28px; height: 24px; padding: 0;
+    font-size: 13px;
+  }
+  .bracket-sep { height: 1px; background: var(--line); margin: 2px 0; }
+  .bracket-label {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); text-align: center; margin-top: 4px;
+  }
+
+  .ranking-card {
+    background: linear-gradient(180deg, rgba(26,34,56,0.6), rgba(10,15,28,0.6));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .ranking-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 100px 80px 80px;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    gap: 12px;
+    transition: all 0.15s;
+  }
+  .ranking-row:last-child { border-bottom: none; }
+  .ranking-row:hover { background: rgba(255,255,255,0.02); }
+  .ranking-row.head {
+    background: rgba(0,0,0,0.3);
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); font-weight: 700;
+  }
+  .ranking-pos {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; color: var(--text-dim);
+    text-align: center;
+  }
+  .ranking-row.gold .ranking-pos { color: var(--gold-bright); text-shadow: 0 0 12px rgba(212,175,55,0.6); }
+  .ranking-row.silver .ranking-pos { color: #c0c0c0; }
+  .ranking-row.bronze .ranking-pos { color: #cd7f32; }
+  .ranking-user {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .ranking-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    background: linear-gradient(135deg, var(--neon), var(--purple));
+  }
+  .ranking-name { font-weight: 600; font-size: 14px; }
+  .ranking-meta { font-size: 11px; color: var(--text-muted); }
+  .ranking-points {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; color: var(--gold-bright);
+    text-align: right;
+  }
+  .ranking-points .pts-suffix { font-size: 11px; color: var(--text-muted); font-family: 'Manrope'; margin-left: 4px; letter-spacing: 2px; }
+  .ranking-stat { text-align: center; }
+  .ranking-stat-value { font-family: 'Space Mono', monospace; font-weight: 700; }
+  .ranking-stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+  .ko-phases-nav {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ko-phase-btn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    white-space: nowrap;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .ko-phase-btn:hover { color: var(--text); border-color: var(--line-strong); }
+  .ko-phase-btn.active {
+    color: var(--gold-bright);
+    background: rgba(212,175,55,0.1);
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(212,175,55,0.2);
+  }
+  .ko-phase-btn .badge-mini {
+    background: rgba(255,255,255,0.08);
+    border-radius: 100px;
+    padding: 1px 8px;
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+  }
+  .ko-phase-btn.active .badge-mini {
+    background: rgba(212,175,55,0.2);
+    color: var(--gold-bright);
+  }
+  .ko-phase-btn.done .badge-mini {
+    background: rgba(0,214,138,0.2);
+    color: var(--green);
+  }
+
+  .ko-match {
+    background: linear-gradient(180deg, rgba(26,34,56,0.6), rgba(10,15,28,0.7));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .ko-match.complete {
+    border-color: rgba(0,214,138,0.3);
+    background: linear-gradient(180deg, rgba(0,214,138,0.05), rgba(10,15,28,0.7));
+  }
+  .ko-match.locked {
+    opacity: 0.6;
+  }
+  .ko-match.locked::after {
+    content: '🔒';
+    position: absolute; top: 8px; right: 12px;
+    font-size: 12px;
+  }
+  .ko-match-header {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--text-muted); font-weight: 700;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .ko-match-header .ko-match-id {
+    color: var(--gold);
+    background: rgba(212,175,55,0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+  .ko-match-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 50px;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+  }
+  .ko-team-flag {
+    font-size: 20px;
+    text-align: center;
+  }
+  .ko-team-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ko-team-name.pending {
+    color: var(--text-muted);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .ko-team-name.winner {
+    color: var(--gold-bright);
+  }
+  .ko-score-input {
+    width: 56px; height: 42px;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px !important;
+    font-weight: 700;
+    background: rgba(0,0,0,0.5) !important;
+    border: 1px solid rgba(212,175,55,0.4);
+    border-radius: 8px;
+    color: #f4d35e !important;
+    -webkit-text-fill-color: #f4d35e !important;
+    caret-color: #f4d35e;
+    text-shadow: 0 0 8px rgba(212,175,55,0.3);
+  }
+  .ko-score-input::placeholder {
+    color: rgba(255,255,255,0.3);
+    -webkit-text-fill-color: rgba(255,255,255,0.3);
+    font-size: 18px;
+  }
+  .ko-score-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(0,0,0,0.7) !important;
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+  }
+  .ko-score-input:disabled {
+    opacity: 0.5;
+  }
+  .ko-score-input::-webkit-outer-spin-button,
+  .ko-score-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .ko-score-input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  .ko-penalty-section {
+    margin-top: 10px;
+    padding: 12px;
+    background: rgba(255,159,67,0.06);
+    border: 1px dashed rgba(255,159,67,0.3);
+    border-radius: 10px;
+  }
+  .ko-penalty-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--orange);
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .ko-tiebreak-mode {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 10px;
+    background: rgba(0,0,0,0.3);
+    padding: 4px;
+    border-radius: 8px;
+  }
+  .ko-tiebreak-mode button {
+    flex: 1;
+    padding: 6px 8px;
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .ko-tiebreak-mode button.active {
+    background: rgba(255,159,67,0.2);
+    color: var(--orange);
+    box-shadow: inset 0 0 0 1px rgba(255,159,67,0.4);
+  }
+  .ko-tiebreak-mode button:hover:not(.active):not(:disabled) {
+    color: var(--text);
+  }
+  .ko-penalty-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .ko-penalty-btn {
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex; align-items: center; gap: 6px;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .ko-penalty-btn:hover { border-color: var(--gold-dim); }
+  .ko-penalty-btn.selected {
+    background: rgba(212,175,55,0.15);
+    border-color: var(--gold);
+    color: var(--gold-bright);
+  }
+  .ko-penalty-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .ko-winner-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 5px 10px;
+    background: rgba(0,214,138,0.1);
+    border: 1px solid rgba(0,214,138,0.3);
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .ko-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .ko-progress {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px;
+  }
+  .ko-progress-text { flex: 1; color: var(--text-dim); }
+  .ko-progress-text strong { color: var(--gold-bright); }
+
+  .trophy-display {
+    background: linear-gradient(180deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05));
+    border: 1px solid rgba(212,175,55,0.4);
+    border-radius: 20px;
+    padding: 30px 20px;
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .trophy-display::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(244,211,94,0.2), transparent 60%);
+    pointer-events: none;
+  }
+  .trophy-display .trophy-icon {
+    font-size: 64px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 24px rgba(212,175,55,0.6));
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+  .trophy-display .trophy-flag {
+    font-size: 48px;
+    margin: 12px 0;
+  }
+  .trophy-display .trophy-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+  }
+  .trophy-display .trophy-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .trophy-display .trophy-pending {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .final-showdown {
+    background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(10,15,28,0.8));
+    border: 2px solid var(--gold);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 0 40px rgba(212,175,55,0.15);
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .ko-grid { grid-template-columns: 1fr; }
+    .trophy-display .trophy-name { font-size: 32px; }
+  }
+
+  .bracket-toggle {
+    display: inline-flex;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 4px;
+    gap: 2px;
+    margin-bottom: 20px;
+  }
+  .bracket-toggle-btn {
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bracket-toggle-btn.active {
+    background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+    color: #1a1100;
+  }
+  .bracket-toggle-btn:not(.active):hover { color: var(--text); }
+
+  .bracket-canvas {
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 50%, rgba(212,175,55,0.04), transparent 70%),
+      linear-gradient(180deg, rgba(10,15,28,0.6), rgba(5,8,16,0.8));
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+  .bracket-canvas::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 50% 50%, rgba(212,175,55,0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  .bracket-tree {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(180px, 1fr));
+    gap: 10px;
+    min-width: 1400px;
+    position: relative;
+    align-items: stretch;
+    z-index: 1;
+  }
+
+  .bracket-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 8px;
+    position: relative;
+  }
+
+  .bracket-col-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .bracket-col-title .col-points {
+    font-family: 'Manrope', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .bk-match {
+    background: linear-gradient(180deg, rgba(26,34,56,0.7), rgba(10,15,28,0.85));
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 10px;
+    transition: all 0.2s;
+    position: relative;
+    cursor: pointer;
+    min-height: 80px;
+  }
+  .bk-match::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .bk-match:hover {
+    border-color: var(--gold);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,175,55,0.2);
+  }
+  .bk-match:hover::before { opacity: 1; }
+
+  .bk-match.complete {
+    border-color: rgba(0,214,138,0.3);
+    background: linear-gradient(180deg, rgba(0,214,138,0.05), rgba(10,15,28,0.85));
+  }
+  .bk-match.editing {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(212,175,55,0.3), 0 8px 24px rgba(212,175,55,0.15);
+  }
+  .bk-match.locked { opacity: 0.5; }
+  .bk-match.pending { opacity: 0.4; cursor: not-allowed; }
+
+  .bk-match-id {
+    position: absolute; top: 6px; right: 8px;
+    font-size: 8px; letter-spacing: 1px;
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .bk-team {
+    display: grid;
+    grid-template-columns: 18px 1fr 22px;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 2px;
+    font-size: 11px;
+    border-radius: 4px;
+  }
+  .bk-team + .bk-team {
+    border-top: 1px dashed rgba(255,255,255,0.06);
+    margin-top: 2px;
+    padding-top: 6px;
+  }
+  .bk-team .flag-mini { font-size: 14px; line-height: 1; }
+  .bk-team .nm {
+    font-size: 11px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text);
+  }
+  .bk-team .nm.pending {
+    color: var(--text-muted);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 10px;
+  }
+  .bk-team .sc {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--gold-bright);
+    text-align: center;
+    background: rgba(0,0,0,0.4);
+    border-radius: 4px;
+    padding: 1px 2px;
+    line-height: 1.2;
+    min-width: 20px;
+  }
+  .bk-team .sc.empty { color: var(--text-muted); }
+  .bk-team.winner .nm { color: var(--gold-bright); font-weight: 700; }
+  .bk-team.winner .sc {
+    background: rgba(212,175,55,0.2);
+    color: var(--gold-bright);
+  }
+
+  .bk-pen-indicator {
+    position: absolute;
+    bottom: 4px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: var(--orange);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .bk-edit-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: fadein 0.2s ease;
+  }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+  .bk-edit-modal {
+    background: linear-gradient(180deg, rgba(26,34,56,0.95), rgba(10,15,28,0.98));
+    border: 1px solid var(--gold);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,175,55,0.2);
+    animation: slidein 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+  }
+  @keyframes slidein {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .bk-edit-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: var(--text-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    transition: all 0.15s;
+  }
+  .bk-edit-close:hover { background: rgba(255,77,109,0.2); color: var(--red); }
+
+  .bk-edit-eyebrow {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 700;
+    text-align: center;
+  }
+  .bk-edit-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    text-align: center;
+    margin: 4px 0 4px;
+  }
+  .bk-edit-date {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-bottom: 22px;
+    letter-spacing: 1px;
+  }
+
+  .bk-edit-versus {
+    display: grid;
+    grid-template-columns: 1fr 50px 1fr;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .bk-edit-team {
+    display: flex; flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+  .bk-edit-team .flag-big { font-size: 42px; line-height: 1; }
+  .bk-edit-team .nm-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    line-height: 1.1;
+    color: var(--text);
+  }
+  .bk-edit-team .nm-big.winner-text {
+    color: var(--gold-bright);
+    text-shadow: 0 0 12px rgba(212,175,55,0.4);
+  }
+  .bk-edit-score {
+    width: 100%;
+    height: 60px;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px !important;
+    background: rgba(0,0,0,0.5) !important;
+    border: 2px solid rgba(212,175,55,0.4);
+    border-radius: 12px;
+    color: #f4d35e !important;
+    -webkit-text-fill-color: #f4d35e !important;
+    text-shadow: 0 0 12px rgba(212,175,55,0.3);
+    caret-color: var(--gold);
+  }
+  .bk-edit-score:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.2);
+    background: rgba(0,0,0,0.7) !important;
+  }
+  .bk-edit-score::-webkit-outer-spin-button,
+  .bk-edit-score::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .bk-edit-vs {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .bk-edit-nav {
+    display: flex; gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .bk-edit-nav button {
+    flex: 1;
+    padding: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-dim);
+    transition: all 0.15s;
+  }
+  .bk-edit-nav button:hover:not(:disabled) {
+    color: var(--text);
+    border-color: var(--gold-dim);
+  }
+  .bk-edit-nav button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .bracket-tree {
+      grid-template-columns: repeat(7, 160px);
+      min-width: 1200px;
+      gap: 6px;
+    }
+    .bracket-canvas { padding: 16px 12px; }
+    .bk-team .nm { font-size: 10px; }
+    .bk-edit-modal { padding: 22px 18px; }
+    .bk-edit-team .nm-big { font-size: 14px; }
+    .bk-edit-team .flag-big { font-size: 32px; }
+    .bk-edit-score { font-size: 28px !important; height: 50px; }
+  }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .rule-card {
+    background: linear-gradient(180deg, rgba(26,34,56,0.4), rgba(10,15,28,0.4));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .rule-card h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; letter-spacing: 1px;
+    color: var(--gold); margin-bottom: 12px;
+  }
+  .rule-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px dashed rgba(255,255,255,0.05);
+  }
+  .rule-row:last-child { border-bottom: none; }
+  .rule-points {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    color: var(--gold-bright);
+    background: rgba(212,175,55,0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  .extra-picks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .pick-card {
+    background: linear-gradient(180deg, rgba(26,34,56,0.5), rgba(10,15,28,0.5));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .pick-label {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); font-weight: 700; margin-bottom: 10px;
+  }
+  .pick-select {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .pick-select:focus { outline: none; border-color: var(--gold); }
+  .pick-input {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  .pick-input:focus { outline: none; border-color: var(--gold); }
+
+  .admin-warning {
+    background: linear-gradient(90deg, rgba(255,77,109,0.1), rgba(255,159,67,0.1));
+    border: 1px solid rgba(255,77,109,0.3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  .admin-warning strong { color: var(--red); }
+  .admin-section {
+    background: linear-gradient(180deg, rgba(26,34,56,0.4), rgba(10,15,28,0.4));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .admin-section h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 1px; color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .participants-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .participants-table th, .participants-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .participants-table th {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); font-weight: 700;
+  }
+  .checkbox-wrap {
+    display: inline-flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  .checkbox-wrap input { width: 18px; height: 18px; accent-color: var(--gold); }
+
+  .badge {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 100px; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
+  }
+  .badge.success { background: rgba(0,214,138,0.15); color: var(--green); border: 1px solid rgba(0,214,138,0.3); }
+  .badge.warn { background: rgba(255,159,67,0.15); color: var(--orange); border: 1px solid rgba(255,159,67,0.3); }
+  .badge.danger { background: rgba(255,77,109,0.15); color: var(--red); border: 1px solid rgba(255,77,109,0.3); }
+  .badge.info { background: rgba(0,240,255,0.1); color: var(--neon); border: 1px solid rgba(0,240,255,0.3); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: rgba(20,28,46,0.95);
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 13px; font-weight: 600;
+    z-index: 2000;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    animation: toast-in 0.3s ease;
+  }
+  .toast.success { border-color: rgba(0,214,138,0.4); }
+  .toast.error { border-color: rgba(255,77,109,0.4); }
+  @keyframes toast-in {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  .deadline-banner {
+    background: linear-gradient(90deg, rgba(212,175,55,0.1), rgba(244,211,94,0.1));
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .deadline-banner.expired {
+    background: linear-gradient(90deg, rgba(255,77,109,0.1), rgba(255,77,109,0.05));
+    border-color: rgba(255,77,109,0.3);
+  }
+  .deadline-icon { font-size: 24px; }
+  .deadline-text { flex: 1; min-width: 200px; }
+  .deadline-title { font-weight: 700; font-size: 14px; }
+  .deadline-sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  @media (max-width: 768px) {
+    .header-inner { padding: 10px 14px; }
+    .header-nav { display: none; }
+    .main { padding: 20px 14px 60px; }
+    .match-card {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 14px;
+    }
+    .match-date { order: -1; font-size: 11px; }
+    .match-team.right { justify-content: flex-start; text-align: left; }
+    .match-score { justify-self: center; }
+    .standings-row {
+      grid-template-columns: 24px 1.5fr repeat(6, 24px);
+      font-size: 11px;
+      gap: 4px;
+      padding: 8px 10px;
+    }
+    .ranking-row {
+      grid-template-columns: 40px 1fr 70px;
+      padding: 10px 12px;
+    }
+    .ranking-row > :nth-child(4), .ranking-row > :nth-child(5) { display: none; }
+    .ranking-points { font-size: 22px; }
+    .welcome-card { padding: 28px 22px; }
+    .welcome-title { font-size: 36px; }
+    .header-user .user-name { display: none; }
+    .stat-card { padding: 14px; }
+    .stat-value { font-size: 30px; }
+  }
+
+  .mobile-nav {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(5,8,16,0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--line);
+    z-index: 100;
+    padding: 6px 4px env(safe-area-inset-bottom, 6px);
+  }
+  .mobile-nav-inner {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
+  }
+  .mobile-nav-btn {
+    padding: 8px 4px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--text-muted);
+    font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 700;
+    border-radius: 8px;
+  }
+  .mobile-nav-btn .icon { font-size: 20px; }
+  .mobile-nav-btn.active { color: var(--gold-bright); }
+  @media (max-width: 768px) {
+    .mobile-nav { display: block; }
+    .main { padding-bottom: 100px; }
+  }
+
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state .emoji { font-size: 48px; opacity: 0.5; margin-bottom: 12px; }
+
+  .progress {
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+    border-radius: 100px;
+    transition: width 0.3s ease;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 1px;
+    margin: 28px 0 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .save-indicator {
+    position: fixed; bottom: 24px; right: 24px;
+    background: rgba(0,214,138,0.15);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 10px 18px;
+    border-radius: 100px;
+    font-size: 12px; font-weight: 700;
+    z-index: 50;
+    display: flex; align-items: center; gap: 8px;
+    backdrop-filter: blur(20px);
+  }
+  @media (max-width: 768px) {
+    .save-indicator { bottom: 80px; right: 14px; }
+  }
+
+  .locked-msg {
+    background: rgba(255,77,109,0.08);
+    border: 1px solid rgba(255,77,109,0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    margin-bottom: 14px;
+    color: var(--red);
+  }
+
+  .tabs {
+    display: flex; gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 10px 16px;
+    font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab.active { color: var(--gold-bright); border-bottom-color: var(--gold); }
+  .tab:hover { color: var(--text); }
+
+  .inconsistency {
+    background: rgba(255,159,67,0.1);
+    border: 1px solid rgba(255,159,67,0.4);
+    color: var(--orange);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+// =================================================================
+//   BOLÃO FIFA 2026 — Sistema Completo (CORRIGIDO)
+// =================================================================
+
+const { useState, useEffect, useMemo, useCallback, useRef } = React;
+
+// =====================================================================
+// DADOS OFICIAIS — 48 Seleções, 12 Grupos, 72 jogos de fase de grupos
+// =====================================================================
+
+const FLAGS = {
+  'México': '🇲🇽', 'África do Sul': '🇿🇦', 'Coreia do Sul': '🇰🇷', 'Chéquia': '🇨🇿',
+  'Canadá': '🇨🇦', 'Bósnia': '🇧🇦', 'Catar': '🇶🇦', 'Suíça': '🇨🇭',
+  'Brasil': '🇧🇷', 'Marrocos': '🇲🇦', 'Haiti': '🇭🇹', 'Escócia': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  'EUA': '🇺🇸', 'Paraguai': '🇵🇾', 'Austrália': '🇦🇺', 'Turquia': '🇹🇷',
+  'Alemanha': '🇩🇪', 'Curaçao': '🇨🇼', 'Costa do Marfim': '🇨🇮', 'Equador': '🇪🇨',
+  'Holanda': '🇳🇱', 'Japão': '🇯🇵', 'Suécia': '🇸🇪', 'Tunísia': '🇹🇳',
+  'Bélgica': '🇧🇪', 'Egito': '🇪🇬', 'Irã': '🇮🇷', 'Nova Zelândia': '🇳🇿',
+  'Espanha': '🇪🇸', 'Cabo Verde': '🇨🇻', 'Arábia Saudita': '🇸🇦', 'Uruguai': '🇺🇾',
+  'França': '🇫🇷', 'Senegal': '🇸🇳', 'Iraque': '🇮🇶', 'Noruega': '🇳🇴',
+  'Argentina': '🇦🇷', 'Argélia': '🇩🇿', 'Áustria': '🇦🇹', 'Jordânia': '🇯🇴',
+  'Portugal': '🇵🇹', 'RD Congo': '🇨🇩', 'Uzbequistão': '🇺🇿', 'Colômbia': '🇨🇴',
+  'Inglaterra': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Croácia': '🇭🇷', 'Gana': '🇬🇭', 'Panamá': '🇵🇦',
+};
+
+const GROUPS = {
+  A: ['México', 'África do Sul', 'Coreia do Sul', 'Chéquia'],
+  B: ['Canadá', 'Bósnia', 'Catar', 'Suíça'],
+  C: ['Brasil', 'Marrocos', 'Haiti', 'Escócia'],
+  D: ['EUA', 'Paraguai', 'Austrália', 'Turquia'],
+  E: ['Alemanha', 'Curaçao', 'Costa do Marfim', 'Equador'],
+  F: ['Holanda', 'Japão', 'Suécia', 'Tunísia'],
+  G: ['Bélgica', 'Egito', 'Irã', 'Nova Zelândia'],
+  H: ['Espanha', 'Cabo Verde', 'Arábia Saudita', 'Uruguai'],
+  I: ['França', 'Senegal', 'Iraque', 'Noruega'],
+  J: ['Argentina', 'Argélia', 'Áustria', 'Jordânia'],
+  K: ['Portugal', 'RD Congo', 'Uzbequistão', 'Colômbia'],
+  L: ['Inglaterra', 'Croácia', 'Gana', 'Panamá'],
+};
+
+const ALL_TEAMS = Object.values(GROUPS).flat();
+
+// =====================================================================
+// CONFIGURAÇÃO
+// =====================================================================
+
+const DEADLINE = new Date('2026-06-10T23:59:59-03:00').getTime();
+const ADMIN_PASSWORD = 'pceXvYDHCYk7aKG';
+const SUPABASE_URL = 'https://atrobbmjmtzulvqcwqch.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_nizIpYNNpt4OtK1vKRFFWw_ch4fjiqP';
+
+// =====================================================================
+// CRIAÇÃO DO CLIENTE SUPABASE (CORRIGIDO - USANDO window.supabase)
+// =====================================================================
+let supabaseClient = null;
+
+function getSupabaseClient() {
+  if (supabaseClient) return supabaseClient;
+  
+  // Tenta pegar do window (carregado via CDN)
+  if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    return supabaseClient;
+  }
+  
+  // Fallback: tenta pegar do escopo global
+  if (typeof supabase !== 'undefined' && supabase.createClient) {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    return supabaseClient;
+  }
+  
+  console.error('Supabase não encontrado! Verifique se o script foi carregado.');
+  return null;
+}
+
+// Função auxiliar para usar em todo o código
+const supabase = getSupabaseClient();
+
+// =====================================================================
+// SINCRONIZAÇÃO AUTOMÁTICA COM A ESPN
+// =====================================================================
+
+const ESPN_TEAM_ALIASES = {
+  'México': ['Mexico'],
+  'África do Sul': ['South Africa'],
+  'Coreia do Sul': ['South Korea', 'Korea Republic'],
+  'Chéquia': ['Czech Republic', 'Czechia'],
+  'Canadá': ['Canada'],
+  'Bósnia': ['Bosnia and Herzegovina', 'Bosnia-Herzegovina', 'Bosnia & Herzegovina'],
+  'Catar': ['Qatar'],
+  'Suíça': ['Switzerland'],
+  'Brasil': ['Brazil'],
+  'Marrocos': ['Morocco'],
+  'Haiti': ['Haiti'],
+  'Escócia': ['Scotland'],
+  'EUA': ['United States', 'USA'],
+  'Paraguai': ['Paraguay'],
+  'Austrália': ['Australia'],
+  'Turquia': ['Turkey', 'Türkiye', 'Turkiye'],
+  'Alemanha': ['Germany'],
+  'Curaçao': ['Curacao', 'Curaçao'],
+  'Costa do Marfim': ['Ivory Coast', "Cote d'Ivoire", 'Côte d’Ivoire', "Côte d'Ivoire"],
+  'Equador': ['Ecuador'],
+  'Holanda': ['Netherlands'],
+  'Japão': ['Japan'],
+  'Suécia': ['Sweden'],
+  'Tunísia': ['Tunisia'],
+  'Bélgica': ['Belgium'],
+  'Egito': ['Egypt'],
+  'Irã': ['Iran', 'IR Iran'],
+  'Nova Zelândia': ['New Zealand'],
+  'Espanha': ['Spain'],
+  'Cabo Verde': ['Cape Verde', 'Cabo Verde'],
+  'Arábia Saudita': ['Saudi Arabia'],
+  'Uruguai': ['Uruguay'],
+  'França': ['France'],
+  'Senegal': ['Senegal'],
+  'Iraque': ['Iraq'],
+  'Noruega': ['Norway'],
+  'Argentina': ['Argentina'],
+  'Argélia': ['Algeria'],
+  'Áustria': ['Austria'],
+  'Jordânia': ['Jordan'],
+  'Portugal': ['Portugal'],
+  'RD Congo': ['DR Congo', 'Congo DR', 'DR Congo (Zaire)'],
+  'Uzbequistão': ['Uzbekistan'],
+  'Colômbia': ['Colombia'],
+  'Inglaterra': ['England'],
+  'Croácia': ['Croatia'],
+  'Gana': ['Ghana'],
+  'Panamá': ['Panama'],
+};
+
+const espnNorm = (s = '') =>
+  s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+
+const espnTeamMatches = (fixtureTeamName, espnTeamName) => {
+  const target = espnNorm(espnTeamName);
+  const aliases = (ESPN_TEAM_ALIASES[fixtureTeamName] || [fixtureTeamName]).map(espnNorm);
+  return aliases.includes(target);
+};
+
+async function fetchEspnScoreboard() {
+  const url = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=20260611-20260719&limit=200';
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`ESPN respondeu ${res.status}`);
+  const data = await res.json();
+  return data?.events || [];
+}
+
+function findEspnEvent(fix, events) {
+  return events.find(ev => {
+    const competitors = ev?.competitions?.[0]?.competitors || [];
+    if (competitors.length < 2) return false;
+    const names = competitors.map(c => c?.team?.displayName || c?.team?.name || '');
+    return (
+      (espnTeamMatches(fix.home, names[0]) && espnTeamMatches(fix.away, names[1])) ||
+      (espnTeamMatches(fix.home, names[1]) && espnTeamMatches(fix.away, names[0]))
+    );
+  });
+}
+
+// 72 jogos da fase de grupos
+const FIXTURES = [
+  // GROUP A
+  { id: 'A1', group: 'A', home: 'México', away: 'África do Sul', date: '2026-06-11T16:00', venue: 'Estádio Azteca' },
+  { id: 'A2', group: 'A', home: 'Coreia do Sul', away: 'Chéquia', date: '2026-06-11T23:00', venue: 'Estádio Akron' },
+  { id: 'A3', group: 'A', home: 'Chéquia', away: 'África do Sul', date: '2026-06-18T13:00', venue: 'Mercedes-Benz Stadium' },
+  { id: 'A4', group: 'A', home: 'México', away: 'Coreia do Sul', date: '2026-06-18T22:00', venue: 'Estádio Akron' },
+  { id: 'A5', group: 'A', home: 'Chéquia', away: 'México', date: '2026-06-24T22:00', venue: 'Estádio Azteca' },
+  { id: 'A6', group: 'A', home: 'África do Sul', away: 'Coreia do Sul', date: '2026-06-24T22:00', venue: 'Estádio BBVA' },
+  // GROUP B
+  { id: 'B1', group: 'B', home: 'Canadá', away: 'Bósnia', date: '2026-06-12T16:00', venue: 'BMO Field' },
+  { id: 'B2', group: 'B', home: 'Catar', away: 'Suíça', date: '2026-06-13T16:00', venue: "Levi's Stadium" },
+  { id: 'B3', group: 'B', home: 'Suíça', away: 'Bósnia', date: '2026-06-18T16:00', venue: 'SoFi Stadium' },
+  { id: 'B4', group: 'B', home: 'Canadá', away: 'Catar', date: '2026-06-18T19:00', venue: 'BC Place' },
+  { id: 'B5', group: 'B', home: 'Suíça', away: 'Canadá', date: '2026-06-24T16:00', venue: 'BC Place' },
+  { id: 'B6', group: 'B', home: 'Bósnia', away: 'Catar', date: '2026-06-24T16:00', venue: 'Lumen Field' },
+  // GROUP C
+  { id: 'C1', group: 'C', home: 'Brasil', away: 'Marrocos', date: '2026-06-13T19:00', venue: 'MetLife Stadium' },
+  { id: 'C2', group: 'C', home: 'Haiti', away: 'Escócia', date: '2026-06-13T22:00', venue: 'Gillette Stadium' },
+  { id: 'C3', group: 'C', home: 'Escócia', away: 'Marrocos', date: '2026-06-19T19:00', venue: 'Gillette Stadium' },
+  { id: 'C4', group: 'C', home: 'Brasil', away: 'Haiti', date: '2026-06-19T21:30', venue: 'Lincoln Financial Field' },
+  { id: 'C5', group: 'C', home: 'Escócia', away: 'Brasil', date: '2026-06-24T19:00', venue: 'Hard Rock Stadium' },
+  { id: 'C6', group: 'C', home: 'Marrocos', away: 'Haiti', date: '2026-06-24T19:00', venue: 'Mercedes-Benz Stadium' },
+  // GROUP D
+  { id: 'D1', group: 'D', home: 'EUA', away: 'Paraguai', date: '2026-06-12T22:00', venue: 'SoFi Stadium' },
+  { id: 'D2', group: 'D', home: 'Austrália', away: 'Turquia', date: '2026-06-13T01:00', venue: 'BC Place' },
+  { id: 'D3', group: 'D', home: 'EUA', away: 'Austrália', date: '2026-06-19T16:00', venue: 'Lumen Field' },
+  { id: 'D4', group: 'D', home: 'Turquia', away: 'Paraguai', date: '2026-06-20T00:00', venue: "Levi's Stadium" },
+  { id: 'D5', group: 'D', home: 'Turquia', away: 'EUA', date: '2026-06-25T23:00', venue: 'SoFi Stadium' },
+  { id: 'D6', group: 'D', home: 'Paraguai', away: 'Austrália', date: '2026-06-25T23:00', venue: "Levi's Stadium" },
+  // GROUP E
+  { id: 'E1', group: 'E', home: 'Alemanha', away: 'Curaçao', date: '2026-06-14T14:00', venue: 'NRG Stadium' },
+  { id: 'E2', group: 'E', home: 'Costa do Marfim', away: 'Equador', date: '2026-06-14T20:00', venue: 'Lincoln Financial Field' },
+  { id: 'E3', group: 'E', home: 'Alemanha', away: 'Costa do Marfim', date: '2026-06-20T17:00', venue: 'BMO Field' },
+  { id: 'E4', group: 'E', home: 'Equador', away: 'Curaçao', date: '2026-06-20T21:00', venue: 'Arrowhead Stadium' },
+  { id: 'E5', group: 'E', home: 'Curaçao', away: 'Costa do Marfim', date: '2026-06-25T17:00', venue: 'Lincoln Financial Field' },
+  { id: 'E6', group: 'E', home: 'Equador', away: 'Alemanha', date: '2026-06-25T17:00', venue: 'MetLife Stadium' },
+  // GROUP F
+  { id: 'F1', group: 'F', home: 'Holanda', away: 'Japão', date: '2026-06-14T17:00', venue: 'AT&T Stadium' },
+  { id: 'F2', group: 'F', home: 'Suécia', away: 'Tunísia', date: '2026-06-14T23:00', venue: 'Estádio BBVA' },
+  { id: 'F3', group: 'F', home: 'Holanda', away: 'Suécia', date: '2026-06-20T14:00', venue: 'NRG Stadium' },
+  { id: 'F4', group: 'F', home: 'Tunísia', away: 'Japão', date: '2026-06-20T01:00', venue: 'Estádio BBVA' },
+  { id: 'F5', group: 'F', home: 'Japão', away: 'Suécia', date: '2026-06-25T20:00', venue: 'AT&T Stadium' },
+  { id: 'F6', group: 'F', home: 'Tunísia', away: 'Holanda', date: '2026-06-25T20:00', venue: 'Arrowhead Stadium' },
+  // GROUP G
+  { id: 'G1', group: 'G', home: 'Bélgica', away: 'Egito', date: '2026-06-15T16:00', venue: 'Lumen Field' },
+  { id: 'G2', group: 'G', home: 'Irã', away: 'Nova Zelândia', date: '2026-06-15T22:00', venue: 'SoFi Stadium' },
+  { id: 'G3', group: 'G', home: 'Bélgica', away: 'Irã', date: '2026-06-21T16:00', venue: 'SoFi Stadium' },
+  { id: 'G4', group: 'G', home: 'Nova Zelândia', away: 'Egito', date: '2026-06-21T22:00', venue: 'BC Place' },
+  { id: 'G5', group: 'G', home: 'Egito', away: 'Irã', date: '2026-06-27T00:00', venue: 'Lumen Field' },
+  { id: 'G6', group: 'G', home: 'Nova Zelândia', away: 'Bélgica', date: '2026-06-27T00:00', venue: 'BC Place' },
+  // GROUP H
+  { id: 'H1', group: 'H', home: 'Espanha', away: 'Cabo Verde', date: '2026-06-15T13:00', venue: 'Mercedes-Benz Stadium' },
+  { id: 'H2', group: 'H', home: 'Arábia Saudita', away: 'Uruguai', date: '2026-06-15T19:00', venue: 'Hard Rock Stadium' },
+  { id: 'H3', group: 'H', home: 'Espanha', away: 'Arábia Saudita', date: '2026-06-21T13:00', venue: 'Mercedes-Benz Stadium' },
+  { id: 'H4', group: 'H', home: 'Uruguai', away: 'Cabo Verde', date: '2026-06-21T19:00', venue: 'Hard Rock Stadium' },
+  { id: 'H5', group: 'H', home: 'Cabo Verde', away: 'Arábia Saudita', date: '2026-06-26T21:00', venue: 'NRG Stadium' },
+  { id: 'H6', group: 'H', home: 'Uruguai', away: 'Espanha', date: '2026-06-26T21:00', venue: 'Estádio Akron' },
+  // GROUP I
+  { id: 'I1', group: 'I', home: 'França', away: 'Senegal', date: '2026-06-16T16:00', venue: 'MetLife Stadium' },
+  { id: 'I2', group: 'I', home: 'Iraque', away: 'Noruega', date: '2026-06-16T19:00', venue: 'Gillette Stadium' },
+  { id: 'I3', group: 'I', home: 'França', away: 'Iraque', date: '2026-06-22T18:00', venue: 'Lincoln Financial Field' },
+  { id: 'I4', group: 'I', home: 'Noruega', away: 'Senegal', date: '2026-06-22T21:00', venue: 'MetLife Stadium' },
+  { id: 'I5', group: 'I', home: 'Noruega', away: 'França', date: '2026-06-26T16:00', venue: 'Gillette Stadium' },
+  { id: 'I6', group: 'I', home: 'Senegal', away: 'Iraque', date: '2026-06-26T16:00', venue: 'BMO Field' },
+  // GROUP J
+  { id: 'J1', group: 'J', home: 'Argentina', away: 'Argélia', date: '2026-06-16T22:00', venue: 'Arrowhead Stadium' },
+  { id: 'J2', group: 'J', home: 'Áustria', away: 'Jordânia', date: '2026-06-17T01:00', venue: "Levi's Stadium" },
+  { id: 'J3', group: 'J', home: 'Argentina', away: 'Áustria', date: '2026-06-22T14:00', venue: 'AT&T Stadium' },
+  { id: 'J4', group: 'J', home: 'Jordânia', away: 'Argélia', date: '2026-06-23T00:00', venue: "Levi's Stadium" },
+  { id: 'J5', group: 'J', home: 'Jordânia', away: 'Argentina', date: '2026-06-27T23:00', venue: 'AT&T Stadium' },
+  { id: 'J6', group: 'J', home: 'Argélia', away: 'Áustria', date: '2026-06-27T23:00', venue: 'Arrowhead Stadium' },
+  // GROUP K
+  { id: 'K1', group: 'K', home: 'Portugal', away: 'RD Congo', date: '2026-06-17T14:00', venue: 'NRG Stadium' },
+  { id: 'K2', group: 'K', home: 'Uzbequistão', away: 'Colômbia', date: '2026-06-17T23:00', venue: 'Estádio Azteca' },
+  { id: 'K3', group: 'K', home: 'Portugal', away: 'Uzbequistão', date: '2026-06-23T14:00', venue: 'NRG Stadium' },
+  { id: 'K4', group: 'K', home: 'Colômbia', away: 'RD Congo', date: '2026-06-23T23:00', venue: 'Estádio Akron' },
+  { id: 'K5', group: 'K', home: 'Colômbia', away: 'Portugal', date: '2026-06-27T20:30', venue: 'Hard Rock Stadium' },
+  { id: 'K6', group: 'K', home: 'RD Congo', away: 'Uzbequistão', date: '2026-06-27T20:30', venue: 'Mercedes-Benz Stadium' },
+  // GROUP L
+  { id: 'L1', group: 'L', home: 'Inglaterra', away: 'Croácia', date: '2026-06-17T17:00', venue: 'AT&T Stadium' },
+  { id: 'L2', group: 'L', home: 'Gana', away: 'Panamá', date: '2026-06-17T20:00', venue: 'BMO Field' },
+  { id: 'L3', group: 'L', home: 'Inglaterra', away: 'Gana', date: '2026-06-23T17:00', venue: 'Gillette Stadium' },
+  { id: 'L4', group: 'L', home: 'Panamá', away: 'Croácia', date: '2026-06-23T20:00', venue: 'BMO Field' },
+  { id: 'L5', group: 'L', home: 'Panamá', away: 'Inglaterra', date: '2026-06-27T18:00', venue: 'MetLife Stadium' },
+  { id: 'L6', group: 'L', home: 'Croácia', away: 'Gana', date: '2026-06-27T18:00', venue: 'Lincoln Financial Field' },
+];
+
+// Knockout structure
+const KO_STRUCTURE = {
+  R32: [
+    { id: 'R32-1',  a: '1E', b: '3A/B/C/D/F', date: '2026-06-29T17:30' },
+    { id: 'R32-2',  a: '1I', b: '3C/D/F/G/H', date: '2026-06-30T18:00' },
+    { id: 'R32-3',  a: '2A', b: '2B',          date: '2026-06-28T16:00' },
+    { id: 'R32-4',  a: '1F', b: '2C',          date: '2026-06-29T22:00' },
+    { id: 'R32-5',  a: '2K', b: '2L',          date: '2026-07-02T20:00' },
+    { id: 'R32-6',  a: '1H', b: '2J',          date: '2026-07-02T16:00' },
+    { id: 'R32-7',  a: '1D', b: '3B/E/F/I/J', date: '2026-07-01T21:00' },
+    { id: 'R32-8',  a: '1G', b: '3A/E/H/I/J', date: '2026-07-01T17:00' },
+    { id: 'R32-9',  a: '1C', b: '2F',          date: '2026-06-29T14:00' },
+    { id: 'R32-10', a: '2E', b: '2I',          date: '2026-06-30T14:00' },
+    { id: 'R32-11', a: '1A', b: '3C/E/F/H/I', date: '2026-06-30T22:00' },
+    { id: 'R32-12', a: '1L', b: '3E/H/I/J/K', date: '2026-07-01T13:00' },
+    { id: 'R32-13', a: '1J', b: '2H',          date: '2026-07-03T19:00' },
+    { id: 'R32-14', a: '2D', b: '2G',          date: '2026-07-03T15:00' },
+    { id: 'R32-15', a: '1B', b: '3E/F/G/I/J', date: '2026-07-03T00:00' },
+    { id: 'R32-16', a: '1K', b: '3D/E/I/J/L', date: '2026-07-03T22:30' },
+  ],
+  R16: [
+    { id: 'R16-1', a: 'W:R32-1',  b: 'W:R32-2',  date: '2026-07-04T16:00' },
+    { id: 'R16-2', a: 'W:R32-3',  b: 'W:R32-4',  date: '2026-07-04T20:00' },
+    { id: 'R16-3', a: 'W:R32-5',  b: 'W:R32-6',  date: '2026-07-05T13:00' },
+    { id: 'R16-4', a: 'W:R32-7',  b: 'W:R32-8',  date: '2026-07-05T17:00' },
+    { id: 'R16-5', a: 'W:R32-9',  b: 'W:R32-10', date: '2026-07-06T13:00' },
+    { id: 'R16-6', a: 'W:R32-11', b: 'W:R32-12', date: '2026-07-06T17:00' },
+    { id: 'R16-7', a: 'W:R32-13', b: 'W:R32-14', date: '2026-07-07T16:00' },
+    { id: 'R16-8', a: 'W:R32-15', b: 'W:R32-16', date: '2026-07-07T20:00' },
+  ],
+  QF: [
+    { id: 'QF-1', a: 'W:R16-1', b: 'W:R16-2', date: '2026-07-09T17:00' },
+    { id: 'QF-2', a: 'W:R16-3', b: 'W:R16-4', date: '2026-07-09T21:00' },
+    { id: 'QF-3', a: 'W:R16-5', b: 'W:R16-6', date: '2026-07-10T17:00' },
+    { id: 'QF-4', a: 'W:R16-7', b: 'W:R16-8', date: '2026-07-11T17:00' },
+  ],
+  SF: [
+    { id: 'SF-1', a: 'W:QF-1', b: 'W:QF-2', date: '2026-07-14T16:00' },
+    { id: 'SF-2', a: 'W:QF-3', b: 'W:QF-4', date: '2026-07-15T16:00' },
+  ],
+  TP: [
+    { id: 'TP-1', a: 'L:SF-1', b: 'L:SF-2', date: '2026-07-18T16:00' },
+  ],
+  F: [
+    { id: 'F-1', a: 'W:SF-1', b: 'W:SF-2', date: '2026-07-19T16:00' },
+  ],
+};
+
+const KO_PHASE_INFO = {
+  R32: { label: '16 avos',    shortLabel: '16-AVOS', icon: '⚔️', points: 4,  winnerBonus: 2, exactBonus: 3 },
+  R16: { label: 'Oitavas',    shortLabel: 'OITAVAS', icon: '🛡️', points: 6,  winnerBonus: 2, exactBonus: 4 },
+  QF:  { label: 'Quartas',    shortLabel: 'QUARTAS', icon: '🔥', points: 8,  winnerBonus: 3, exactBonus: 5 },
+  SF:  { label: 'Semifinais', shortLabel: 'SEMI',    icon: '⚡', points: 10, winnerBonus: 4, exactBonus: 6 },
+  TP:  { label: '3º Lugar',   shortLabel: '3º LUG.', icon: '🥉', points: 10, winnerBonus: 4, exactBonus: 6 },
+  F:   { label: 'Final',      shortLabel: 'FINAL',   icon: '🏆', points: 14, winnerBonus: 5, exactBonus: 8 },
+};
+
+const KO_PHASE_ORDER = ['R32', 'R16', 'QF', 'SF', 'TP', 'F'];
+
+const RULES = [
+  { label: 'Placar exato', pts: 5, cat: 'Fase de Grupos' },
+  { label: 'Acertou vencedor/empate', pts: 2, cat: 'Fase de Grupos' },
+  { label: 'Posição exata do time no grupo', pts: 3, cat: 'Fase de Grupos' },
+  { label: '🎯 Confronto 16-avos', pts: 4, cat: 'Mata-mata: Confronto' },
+  { label: '🎯 Confronto Oitavas', pts: 6, cat: 'Mata-mata: Confronto' },
+  { label: '🎯 Confronto Quartas', pts: 8, cat: 'Mata-mata: Confronto' },
+  { label: '🎯 Confronto Semifinal', pts: 10, cat: 'Mata-mata: Confronto' },
+  { label: '🎯 Confronto 3º lugar', pts: 10, cat: 'Mata-mata: Confronto' },
+  { label: '🎯 Confronto Final', pts: 14, cat: 'Mata-mata: Confronto' },
+  { label: '+ Vencedor 16-avos', pts: 2, cat: 'Mata-mata: Bônus' },
+  { label: '+ Vencedor Oitavas', pts: 2, cat: 'Mata-mata: Bônus' },
+  { label: '+ Vencedor Quartas', pts: 3, cat: 'Mata-mata: Bônus' },
+  { label: '+ Vencedor Semi', pts: 4, cat: 'Mata-mata: Bônus' },
+  { label: '+ Vencedor 3º lugar', pts: 4, cat: 'Mata-mata: Bônus' },
+  { label: '+ Vencedor Final', pts: 5, cat: 'Mata-mata: Bônus' },
+  { label: '+ Placar exato 16-avos', pts: 3, cat: 'Mata-mata: Placar Exato' },
+  { label: '+ Placar exato Oitavas', pts: 4, cat: 'Mata-mata: Placar Exato' },
+  { label: '+ Placar exato Quartas', pts: 5, cat: 'Mata-mata: Placar Exato' },
+  { label: '+ Placar exato Semi', pts: 6, cat: 'Mata-mata: Placar Exato' },
+  { label: '+ Placar exato 3º lugar', pts: 6, cat: 'Mata-mata: Placar Exato' },
+  { label: '+ Placar exato Final', pts: 8, cat: 'Mata-mata: Placar Exato' },
+  { label: '🎯 Time chegou às Oitavas', pts: 1, cat: 'Bônus por Sobrevivência' },
+  { label: '🎯 Time chegou às Quartas', pts: 2, cat: 'Bônus por Sobrevivência' },
+  { label: '🎯 Time chegou às Semis', pts: 3, cat: 'Bônus por Sobrevivência' },
+  { label: '🎯 Time chegou à Final', pts: 5, cat: 'Bônus por Sobrevivência' },
+  { label: '🥇 Campeão', pts: 25, cat: 'Classificação Final' },
+  { label: '🥈 Vice', pts: 18, cat: 'Classificação Final' },
+  { label: '🥉 3º colocado', pts: 12, cat: 'Classificação Final' },
+  { label: '4️⃣ 4º colocado', pts: 10, cat: 'Classificação Final' },
+  { label: '⚽ Artilheiro', pts: 15, cat: 'Classificação Final' },
+];
+
+const SESSION_KEY = 'bolao_fifa_2026_session';
+
+const defaultResults = () => ({
+  matches: {}, standings: {},
+  champion: '', vice: '', third: '', fourth: '', topScorer: '',
+});
+const defaultStore = () => ({ users: {}, results: defaultResults(), currentUser: null });
+
+const userFromRow = (row) => ({
+  username: row.username,
+  name: row.name,
+  whatsapp: row.whatsapp || '',
+  password: row.password,
+  isAdmin: !!row.is_admin,
+  predictions: row.predictions || {},
+  extras: row.extras || {},
+  knockout: row.knockout || {},
+  createdAt: row.created_at ? new Date(row.created_at).getTime() : Date.now(),
+});
+
+const resultsFromRow = (row) => ({
+  matches: row?.matches || {},
+  knockout: row?.knockout || {},
+  standings: {},
+  champion: row?.champion || '',
+  vice: row?.vice || '',
+  third: row?.third || '',
+  fourth: row?.fourth || '',
+  topScorer: row?.top_scorer || '',
+});
+
+// =====================================================================
+// FUNÇÕES DE SUPABASE (CORRIGIDAS)
+// =====================================================================
+
+async function loadAllFromSupabase() {
+  try {
+    if (!supabase) {
+      console.error('Supabase não disponível');
+      return defaultStore();
+    }
+    
+    const [{ data: users, error: e1 }, { data: results, error: e2 }] = await Promise.all([
+      supabase.from('bolao_users').select('*'),
+      supabase.from('bolao_results').select('*').eq('id', 1).maybeSingle(),
+    ]);
+    if (e1) console.error('Erro ao carregar usuários:', e1);
+    if (e2) console.error('Erro ao carregar resultados:', e2);
+
+    const usersMap = {};
+    (users || []).forEach(u => { usersMap[u.username] = userFromRow(u); });
+    return {
+      users: usersMap,
+      results: resultsFromRow(results),
+      currentUser: localStorage.getItem(SESSION_KEY) || null,
+    };
+  } catch (err) {
+    console.error('Erro Supabase:', err);
+    return defaultStore();
+  }
+}
+
+async function upsertUser(user) {
+  if (!supabase) return false;
+  const row = {
+    username: user.username,
+    name: user.name,
+    whatsapp: user.whatsapp || '',
+    password: user.password,
+    is_admin: !!user.isAdmin,
+    predictions: user.predictions || {},
+    extras: user.extras || {},
+    knockout: user.knockout || {},
+    updated_at: new Date().toISOString(),
+  };
+  const { error } = await supabase.from('bolao_users').upsert(row, { onConflict: 'username' });
+  if (error) console.error('Erro ao salvar usuário:', error);
+  return !error;
+}
+
+async function deleteUserDb(username) {
+  if (!supabase) return false;
+  const { error } = await supabase.from('bolao_users').delete().eq('username', username);
+  if (error) console.error('Erro ao deletar usuário:', error);
+  return !error;
+}
+
+async function updateResultsDb(results) {
+  if (!supabase) return false;
+  const row = {
+    id: 1,
+    matches: results.matches || {},
+    knockout: results.knockout || {},
+    champion: results.champion || '',
+    vice: results.vice || '',
+    third: results.third || '',
+    fourth: results.fourth || '',
+    top_scorer: results.topScorer || '',
+    updated_at: new Date().toISOString(),
+  };
+  const { error } = await supabase.from('bolao_results').upsert(row, { onConflict: 'id' });
+  if (error) console.error('Erro ao salvar resultados:', error);
+  return !error;
+}
+
+// =====================================================================
+// CALCULATIONS
+// =====================================================================
+
+function calcStandings(predictions, group) {
+  const teams = GROUPS[group];
+  const table = teams.map(t => ({ team: t, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0 }));
+  const groupFixtures = FIXTURES.filter(f => f.group === group);
+
+  groupFixtures.forEach(fix => {
+    const pred = predictions?.[fix.id];
+    if (!pred || pred.home === '' || pred.away === '') return;
+    const h = parseInt(pred.home), a = parseInt(pred.away);
+    if (isNaN(h) || isNaN(a)) return;
+    const rowH = table.find(r => r.team === fix.home);
+    const rowA = table.find(r => r.team === fix.away);
+    if (!rowH || !rowA) return;
+    rowH.p++; rowA.p++;
+    rowH.gf += h; rowH.ga += a;
+    rowA.gf += a; rowA.ga += h;
+    if (h > a) { rowH.w++; rowH.pts += 3; rowA.l++; }
+    else if (h < a) { rowA.w++; rowA.pts += 3; rowH.l++; }
+    else { rowH.d++; rowA.d++; rowH.pts++; rowA.pts++; }
+  });
+
+  table.forEach(r => r.gd = r.gf - r.ga);
+  table.sort((x, y) => y.pts - x.pts || y.gd - x.gd || y.gf - x.gf || x.team.localeCompare(y.team));
+  return table;
+}
+
+function getQualifiedTeams(predictions) {
+  const firstPlaces = {}, secondPlaces = {}, thirdPlacesArr = [];
+  Object.keys(GROUPS).forEach(g => {
+    const t = calcStandings(predictions, g);
+    firstPlaces[g] = t[0]?.team || '';
+    secondPlaces[g] = t[1]?.team || '';
+    if (t[2]) thirdPlacesArr.push({ group: g, ...t[2] });
+  });
+  thirdPlacesArr.sort((x, y) => y.pts - x.pts || y.gd - x.gd || y.gf - x.gf);
+  return { firstPlaces, secondPlaces, thirdPlaces: thirdPlacesArr.slice(0, 8) };
+}
+
+function getKnockoutWinner(matchData) {
+  if (!matchData) return null;
+  const a = parseInt(matchData.scoreA);
+  const b = parseInt(matchData.scoreB);
+  if (isNaN(a) || isNaN(b)) return null;
+  if (a > b) return 'A';
+  if (b > a) return 'B';
+  if (matchData.penaltyWinner === 'A' || matchData.penaltyWinner === 'B') {
+    return matchData.penaltyWinner;
+  }
+  return null;
+}
+
+function resolveSlot(slot, qualified, knockout) {
+  if (!slot) return null;
+  if (/^1[A-L]$/.test(slot)) return qualified.firstPlaces[slot[1]] || null;
+  if (/^2[A-L]$/.test(slot)) return qualified.secondPlaces[slot[1]] || null;
+  if (slot.startsWith('3')) {
+    const allowed = slot.substring(1).split('/');
+    for (const t of qualified.thirdPlaces) {
+      if (allowed.includes(t.group)) return t.team;
+    }
+    return null;
+  }
+  if (slot.startsWith('W:')) {
+    const matchId = slot.slice(2);
+    const data = knockout[matchId];
+    if (!data) return null;
+    const w = getKnockoutWinner(data);
+    if (!w) return null;
+    return w === 'A' ? data.teamA : data.teamB;
+  }
+  if (slot.startsWith('L:')) {
+    const matchId = slot.slice(2);
+    const data = knockout[matchId];
+    if (!data) return null;
+    const w = getKnockoutWinner(data);
+    if (!w) return null;
+    return w === 'A' ? data.teamB : data.teamA;
+  }
+  return null;
+}
+
+function resolveAllKnockout(predictions, knockoutPicks) {
+  const qualified = getQualifiedTeams(predictions);
+  const knockout = { ...(knockoutPicks || {}) };
+
+  const thirdSlots = [];
+  KO_STRUCTURE.R32.forEach((m, idx) => {
+    if (m.a.startsWith('3')) thirdSlots.push({ matchIdx: idx, side: 'a', allowed: m.a.substring(1).split('/') });
+    if (m.b.startsWith('3')) thirdSlots.push({ matchIdx: idx, side: 'b', allowed: m.b.substring(1).split('/') });
+  });
+
+  const thirdsByGroup = {};
+  qualified.thirdPlaces.forEach(t => { thirdsByGroup[t.group] = t.team; });
+  const availableGroups = Object.keys(thirdsByGroup);
+
+  const slotOptionsCount = thirdSlots.map(s => s.allowed.filter(g => availableGroups.includes(g)).length);
+  const slotOrder = thirdSlots.map((_, i) => i).sort((a, b) => slotOptionsCount[a] - slotOptionsCount[b]);
+
+  const assignment = {};
+  function tryAssign(orderIdx, usedGroups) {
+    if (orderIdx === slotOrder.length) return true;
+    const slotIdx = slotOrder[orderIdx];
+    const slot = thirdSlots[slotIdx];
+    for (const g of slot.allowed) {
+      if (!availableGroups.includes(g)) continue;
+      if (usedGroups.has(g)) continue;
+      const key = `${slot.matchIdx}_${slot.side}`;
+      assignment[key] = g;
+      usedGroups.add(g);
+      if (tryAssign(orderIdx + 1, usedGroups)) return true;
+      usedGroups.delete(g);
+      delete assignment[key];
+    }
+    return false;
+  }
+  if (availableGroups.length >= 8) {
+    tryAssign(0, new Set());
+  }
+
+  const getThirdForSlot = (matchIdx, side) => {
+    const key = `${matchIdx}_${side}`;
+    const group = assignment[key];
+    return group ? thirdsByGroup[group] : null;
+  };
+
+  const out = {};
+  KO_PHASE_ORDER.forEach(phase => {
+    out[phase] = KO_STRUCTURE[phase].map((m, idx) => {
+      let teamA, teamB;
+
+      if (phase === 'R32') {
+        if (m.a.startsWith('3')) teamA = getThirdForSlot(idx, 'a');
+        else teamA = resolveSlot(m.a, qualified, knockout);
+
+        if (m.b.startsWith('3')) teamB = getThirdForSlot(idx, 'b');
+        else teamB = resolveSlot(m.b, qualified, knockout);
+      } else {
+        teamA = resolveSlot(m.a, qualified, knockout);
+        teamB = resolveSlot(m.b, qualified, knockout);
+      }
+
+      const userData = knockout[m.id] || {};
+      knockout[m.id] = {
+        teamA: teamA || userData.teamA || null,
+        teamB: teamB || userData.teamB || null,
+        scoreA: userData.scoreA ?? '',
+        scoreB: userData.scoreB ?? '',
+        penaltyWinner: userData.penaltyWinner || null,
+        tiebreakMode: userData.tiebreakMode || null,
+      };
+      return {
+        id: m.id,
+        date: m.date,
+        slotA: m.a,
+        slotB: m.b,
+        teamA: knockout[m.id].teamA,
+        teamB: knockout[m.id].teamB,
+        scoreA: knockout[m.id].scoreA,
+        scoreB: knockout[m.id].scoreB,
+        penaltyWinner: knockout[m.id].penaltyWinner,
+        tiebreakMode: knockout[m.id].tiebreakMode,
+        winner: getKnockoutWinner(knockout[m.id]),
+        winnerTeam: (() => {
+          const w = getKnockoutWinner(knockout[m.id]);
+          if (!w) return null;
+          return w === 'A' ? knockout[m.id].teamA : knockout[m.id].teamB;
+        })(),
+      };
+    });
+  });
+  return out;
+}
+
+const SURVIVAL_POINTS = {
+  R16: 1,
+  QF:  2,
+  SF:  3,
+  F:   5,
+};
+
+function getSurvivorsByPhase(allKO) {
+  const out = { R16: new Set(), QF: new Set(), SF: new Set(), F: new Set() };
+  ['R16', 'QF', 'SF', 'F'].forEach(phase => {
+    (allKO[phase] || []).forEach(m => {
+      if (m.teamA) out[phase].add(m.teamA);
+      if (m.teamB) out[phase].add(m.teamB);
+    });
+  });
+  return out;
+}
+
+function computeSurvivalBonus(userAllKO, realAllKO) {
+  const userSurv = getSurvivorsByPhase(userAllKO);
+  const realSurv = getSurvivorsByPhase(realAllKO);
+  let totalPoints = 0;
+  const breakdown = {};
+  ['R16', 'QF', 'SF', 'F'].forEach(phase => {
+    const matches = [...userSurv[phase]].filter(t => realSurv[phase].has(t));
+    breakdown[phase] = {
+      matched: matches.length,
+      total: realSurv[phase].size,
+      points: matches.length * SURVIVAL_POINTS[phase],
+      pointsPerTeam: SURVIVAL_POINTS[phase],
+      teams: matches,
+    };
+    totalPoints += breakdown[phase].points;
+  });
+  return { totalPoints, breakdown };
+}
+
+function computeUserPoints(user, results) {
+  let points = 0;
+  let stats = { exact: 0, winner: 0, totalGames: 0, koMatches: 0 };
+  if (!user || !user.predictions) return { points, stats };
+
+  FIXTURES.forEach(fix => {
+    const pred = user.predictions[fix.id];
+    const real = results.matches[fix.id];
+    if (!pred || !real || pred.home === '' || pred.away === '' || real.home === '' || real.away === '') return;
+    if (real.home === undefined || real.away === undefined) return;
+    stats.totalGames++;
+    const ph = parseInt(pred.home), pa = parseInt(pred.away);
+    const rh = parseInt(real.home), ra = parseInt(real.away);
+    if (isNaN(ph) || isNaN(pa) || isNaN(rh) || isNaN(ra)) return;
+    if (ph === rh && pa === ra) { points += 5; stats.exact++; }
+    else {
+      const pResult = ph > pa ? 'H' : ph < pa ? 'A' : 'D';
+      const rResult = rh > ra ? 'H' : rh < ra ? 'A' : 'D';
+      if (pResult === rResult) { points += 2; stats.winner++; }
+    }
+  });
+
+  if (results.standings) {
+    const userStandings = {};
+    Object.keys(GROUPS).forEach(g => {
+      userStandings[g] = calcStandings(user.predictions, g).map(r => r.team);
+    });
+    Object.keys(results.standings).forEach(g => {
+      const real = results.standings[g];
+      const pred = userStandings[g];
+      if (!real || real.length === 0) return;
+      real.forEach((team, idx) => {
+        if (pred?.[idx] === team) points += 3;
+      });
+    });
+  }
+
+  const hasOfficialKnockout = results.knockout && Object.keys(results.knockout).some(k => {
+    const m = results.knockout[k];
+    return m && (m.scoreA !== '' && m.scoreA !== undefined && m.scoreA !== null);
+  });
+  if (hasOfficialKnockout) {
+    const userKO = resolveAllKnockout(user.predictions, user.knockout || {});
+    const realKO = resolveAllKnockout(
+      results.matches ? Object.fromEntries(Object.entries(results.matches).map(([k,v])=>[k,{home:v.home,away:v.away}])) : {},
+      results.knockout
+    );
+    stats.koExact = 0;
+    stats.koWinner = 0;
+    KO_PHASE_ORDER.forEach(phase => {
+      const phaseInfo = KO_PHASE_INFO[phase];
+      const phasePts = phaseInfo.points;
+      const winnerBonus = phaseInfo.winnerBonus || 0;
+      const exactBonus = phaseInfo.exactBonus || 0;
+      const userMatches = userKO[phase] || [];
+      const realMatches = realKO[phase] || [];
+
+      realMatches.forEach((rm, idx) => {
+        const um = userMatches[idx];
+        if (!um || !rm.teamA || !rm.teamB) return;
+        if (!um.teamA || !um.teamB) return;
+
+        const realPair = new Set([rm.teamA, rm.teamB]);
+        const userPair = new Set([um.teamA, um.teamB]);
+        const matchedConfronto = userPair.size === 2 && [...realPair].every(t => userPair.has(t));
+        if (!matchedConfronto) return;
+
+        points += phasePts;
+        stats.koMatches++;
+
+        const realHasScore = rm.scoreA !== '' && rm.scoreA !== undefined && rm.scoreA !== null
+                          && rm.scoreB !== '' && rm.scoreB !== undefined && rm.scoreB !== null;
+        const userHasScore = um.scoreA !== '' && um.scoreA !== undefined && um.scoreA !== null
+                          && um.scoreB !== '' && um.scoreB !== undefined && um.scoreB !== null;
+        if (!realHasScore || !userHasScore) return;
+
+        const rTeamA = rm.teamA, rTeamB = rm.teamB;
+        const rScoreA = parseInt(rm.scoreA), rScoreB = parseInt(rm.scoreB);
+
+        let uScoreForRealA, uScoreForRealB;
+        if (um.teamA === rTeamA && um.teamB === rTeamB) {
+          uScoreForRealA = parseInt(um.scoreA);
+          uScoreForRealB = parseInt(um.scoreB);
+        } else if (um.teamA === rTeamB && um.teamB === rTeamA) {
+          uScoreForRealA = parseInt(um.scoreB);
+          uScoreForRealB = parseInt(um.scoreA);
+        } else {
+          return;
+        }
+
+        if (isNaN(uScoreForRealA) || isNaN(uScoreForRealB) || isNaN(rScoreA) || isNaN(rScoreB)) return;
+
+        if (uScoreForRealA === rScoreA && uScoreForRealB === rScoreB) {
+          points += exactBonus;
+          stats.koExact++;
+        } else {
+          const uResult = uScoreForRealA > uScoreForRealB ? 'A' : uScoreForRealA < uScoreForRealB ? 'B' : 'D';
+          const rResult = rScoreA > rScoreB ? 'A' : rScoreA < rScoreB ? 'B' : 'D';
+          if (uResult === rResult) {
+            points += winnerBonus;
+            stats.koWinner++;
+          }
+        }
+      });
+    });
+  }
+
+  if (hasOfficialKnockout) {
+    const userAllKO = resolveAllKnockout(user.predictions, user.knockout || {});
+    const realAllKO = resolveAllKnockout(
+      results.matches ? Object.fromEntries(Object.entries(results.matches).map(([k,v])=>[k,{home:v.home,away:v.away}])) : {},
+      results.knockout || {}
+    );
+    const survBonus = computeSurvivalBonus(userAllKO, realAllKO);
+    points += survBonus.totalPoints;
+    stats.survivalBonus = survBonus.totalPoints;
+    stats.survivalBreakdown = survBonus.breakdown;
+  }
+
+  const extras = user.extras || {};
+  if (results.champion && extras.champion === results.champion) points += 25;
+  if (results.vice && extras.vice === results.vice) points += 18;
+  if (results.third && extras.third === results.third) points += 12;
+  if (results.fourth && extras.fourth === results.fourth) points += 10;
+  if (results.topScorer && extras.topScorer &&
+      extras.topScorer.trim().toLowerCase() === results.topScorer.trim().toLowerCase()) points += 15;
+
+  return { points, stats };
+}
+
+const fmtDateBR = (iso) => {
+  const d = new Date(iso);
+  const day = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  const time = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const weekday = d.toLocaleDateString('pt-BR', { weekday: 'short' });
+  return { day, time, weekday: weekday.replace('.', '').toUpperCase() };
+};
+
+const isMatchLocked = (fixDate, globalDeadline = DEADLINE) => {
+  return Date.now() >= globalDeadline;
+};
+
+const getInitials = (name) => name.trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('');
+
+const getAvatarColor = (name) => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  const hue = Math.abs(hash) % 360;
+  return `linear-gradient(135deg, hsl(${hue},65%,55%), hsl(${(hue+60)%360},65%,55%))`;
+};
+
+// =====================================================================
+// COUNTDOWN COMPONENT
+// =====================================================================
+function Countdown({ target }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = Math.max(0, target - now);
+  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((diff / (1000 * 60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+  if (diff <= 0) return <div style={{ color: 'var(--red)', textAlign: 'center', fontWeight: 700 }}>PRAZO ENCERRADO</div>;
+  return (
+    <div className="countdown">
+      <div className="countdown-box"><div className="countdown-value">{String(d).padStart(2, '0')}</div><div className="countdown-label">Dias</div></div>
+      <div className="countdown-box"><div className="countdown-value">{String(h).padStart(2, '0')}</div><div className="countdown-label">Hrs</div></div>
+      <div className="countdown-box"><div className="countdown-value">{String(m).padStart(2, '0')}</div><div className="countdown-label">Min</div></div>
+      <div className="countdown-box"><div className="countdown-value">{String(s).padStart(2, '0')}</div><div className="countdown-label">Seg</div></div>
+    </div>
+  );
+}
+
+// =====================================================================
+// MAIN APP
+// =====================================================================
+function App() {
+  const [store, setStore] = useState(defaultStore);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState('palpites');
+  const [toast, setToast] = useState(null);
+  const [showSaveIndicator, setShowSaveIndicator] = useState(false);
+  const [espnSyncing, setEspnSyncing] = useState(false);
+  const [espnLastSync, setEspnLastSync] = useState(null);
+  const saveTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const data = await loadAllFromSupabase();
+      if (mounted) {
+        setStore(data);
+        setLoading(false);
+      }
+    })();
+
+    if (supabase) {
+      const channel = supabase
+        .channel('bolao_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'bolao_users' }, async () => {
+          const { data } = await supabase.from('bolao_users').select('*');
+          if (!mounted) return;
+          const usersMap = {};
+          (data || []).forEach(u => { usersMap[u.username] = userFromRow(u); });
+          setStore(prev => ({ ...prev, users: usersMap }));
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'bolao_results' }, async () => {
+          const { data } = await supabase.from('bolao_results').select('*').eq('id', 1).maybeSingle();
+          if (!mounted) return;
+          setStore(prev => ({ ...prev, results: resultsFromRow(data) }));
+        })
+        .subscribe();
+
+      return () => {
+        mounted = false;
+        supabase.removeChannel(channel);
+      };
+    }
+    
+    return () => { mounted = false; };
+  }, []);
+
+  const showToast = (msg, type = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 2500);
+  };
+
+  const triggerSaveIndicator = () => {
+    setShowSaveIndicator(true);
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => setShowSaveIndicator(false), 1500);
+  };
+
+  const currentUser = store.currentUser ? store.users[store.currentUser] : null;
+  const isLoggedIn = !!currentUser;
+  const isAdmin = currentUser?.isAdmin === true;
+
+  const handleLogin = async (username, password) => {
+    const u = username.trim().toLowerCase();
+    if (u === 'admin' && password === ADMIN_PASSWORD) {
+      let adminUser = store.users['admin'];
+      if (!adminUser) {
+        const newAdmin = {
+          username: 'admin', name: 'Administrador', whatsapp: '',
+          password: ADMIN_PASSWORD, isAdmin: true,
+          predictions: {}, extras: {},
+        };
+        await upsertUser(newAdmin);
+        adminUser = newAdmin;
+      } else if (!adminUser.isAdmin) {
+        await upsertUser({ ...adminUser, isAdmin: true });
+      }
+      localStorage.setItem(SESSION_KEY, 'admin');
+      setStore(prev => ({
+        ...prev,
+        users: { ...prev.users, admin: { ...(prev.users.admin || adminUser), isAdmin: true } },
+        currentUser: 'admin',
+      }));
+      showToast('Bem-vindo, Admin');
+      return true;
+    }
+    const user = store.users[u];
+    if (!user) { showToast('Usuário não encontrado', 'error'); return false; }
+    if (user.password !== password) { showToast('Senha incorreta', 'error'); return false; }
+    localStorage.setItem(SESSION_KEY, u);
+    setStore(prev => ({ ...prev, currentUser: u }));
+    showToast(`Bem-vindo, ${user.name.split(' ')[0]}!`);
+    return true;
+  };
+
+  const handleRegister = async ({ username, name, whatsapp, password }) => {
+    const u = username.trim().toLowerCase();
+    if (!u || !name || !password) { showToast('Preencha todos os campos', 'error'); return false; }
+    if (u === 'admin') { showToast('Usuário reservado', 'error'); return false; }
+
+    if (supabase) {
+      const { data: existing } = await supabase.from('bolao_users').select('username').eq('username', u).maybeSingle();
+      if (existing) { showToast('Esse nome de usuário já existe', 'error'); return false; }
+    }
+
+    const newUser = {
+      username: u, name: name.trim(), whatsapp: whatsapp.trim(),
+      password, isAdmin: false,
+      predictions: {}, extras: {},
+      createdAt: Date.now(),
+    };
+    const ok = await upsertUser(newUser);
+    if (!ok) { showToast('Erro ao criar conta. Tente novamente.', 'error'); return false; }
+    localStorage.setItem(SESSION_KEY, u);
+    setStore(prev => ({
+      ...prev,
+      users: { ...prev.users, [u]: newUser },
+      currentUser: u,
+    }));
+    showToast(`Conta criada! Bem-vindo, ${name.split(' ')[0]}.`);
+    return true;
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem(SESSION_KEY);
+    setStore(prev => ({ ...prev, currentUser: null }));
+    setPage('palpites');
+  };
+
+  const updatePrediction = async (matchId, side, value) => {
+    if (!currentUser) return;
+    const fix = FIXTURES.find(f => f.id === matchId);
+    if (fix && !isAdmin && isMatchLocked(fix.date)) {
+      showToast('Este jogo está bloqueado para edição', 'error');
+      return;
+    }
+    const u = store.currentUser;
+    const user = { ...store.users[u] };
+    user.predictions = { ...user.predictions };
+    user.predictions[matchId] = { ...(user.predictions[matchId] || { home: '', away: '' }) };
+    user.predictions[matchId][side] = value;
+
+    setStore(prev => ({ ...prev, users: { ...prev.users, [u]: user } }));
+    triggerSaveIndicator();
+    await upsertUser(user);
+  };
+
+  const updateExtra = async (field, value) => {
+    if (!currentUser) return;
+    if (Date.now() >= DEADLINE && !isAdmin) {
+      showToast('Prazo encerrado', 'error');
+      return;
+    }
+    const u = store.currentUser;
+    const user = { ...store.users[u], extras: { ...(store.users[u].extras || {}), [field]: value } };
+    setStore(prev => ({ ...prev, users: { ...prev.users, [u]: user } }));
+    triggerSaveIndicator();
+    await upsertUser(user);
+  };
+
+  const updateKnockout = async (matchId, field, value) => {
+    if (!currentUser) return;
+    if (Date.now() >= DEADLINE && !isAdmin) {
+      showToast('Prazo encerrado para palpites', 'error');
+      return;
+    }
+    const u = store.currentUser;
+    const user = { ...store.users[u] };
+    user.knockout = { ...(user.knockout || {}) };
+    user.knockout[matchId] = { ...(user.knockout[matchId] || {}), [field]: value };
+    if (field === 'scoreA' || field === 'scoreB') {
+      const a = parseInt(field === 'scoreA' ? value : user.knockout[matchId].scoreA);
+      const b = parseInt(field === 'scoreB' ? value : user.knockout[matchId].scoreB);
+      if (!isNaN(a) && !isNaN(b) && a !== b) {
+        user.knockout[matchId].penaltyWinner = null;
+      }
+    }
+    setStore(prev => ({ ...prev, users: { ...prev.users, [u]: user } }));
+    triggerSaveIndicator();
+    await upsertUser(user);
+  };
+
+  const updateOfficialResult = async (matchId, side, value) => {
+    const newResults = { ...store.results, matches: { ...store.results.matches } };
+    newResults.matches[matchId] = { ...(newResults.matches[matchId] || { home: '', away: '' }) };
+    newResults.matches[matchId][side] = value;
+    setStore(prev => ({ ...prev, results: newResults }));
+    triggerSaveIndicator();
+    await updateResultsDb(newResults);
+  };
+
+  const syncWithEspn = async (silent = false) => {
+    setEspnSyncing(true);
+    try {
+      const events = await fetchEspnScoreboard();
+      const newMatches = { ...store.results.matches };
+      let updated = 0, finished = 0;
+      const unmatched = [];
+
+      FIXTURES.forEach(fix => {
+        const ev = findEspnEvent(fix, events);
+        if (!ev) { unmatched.push(fix.id); return; }
+
+        const comp = ev.competitions?.[0];
+        const statusName = comp?.status?.type?.name || '';
+        const isFinal = statusName === 'STATUS_FINAL' || !!comp?.status?.type?.completed;
+        if (statusName === 'STATUS_SCHEDULED' || statusName === '') return;
+
+        const competitors = comp?.competitors || [];
+        const homeC = competitors.find(c => espnTeamMatches(fix.home, c?.team?.displayName || c?.team?.name || ''));
+        const awayC = competitors.find(c => espnTeamMatches(fix.away, c?.team?.displayName || c?.team?.name || ''));
+        if (!homeC || !awayC) return;
+        if (homeC.score == null || awayC.score == null) return;
+
+        const hs = String(homeC.score), as = String(awayC.score);
+        const cur = newMatches[fix.id] || {};
+        if (cur.home !== hs || cur.away !== as) {
+          newMatches[fix.id] = { home: hs, away: as };
+          updated++;
+          if (isFinal) finished++;
+        }
+      });
+
+      if (updated > 0) {
+        const newResults = { ...store.results, matches: newMatches };
+        setStore(prev => ({ ...prev, results: newResults }));
+        triggerSaveIndicator();
+        await updateResultsDb(newResults);
+      }
+
+      setEspnLastSync(new Date());
+      if (!silent) {
+        showToast(`ESPN: ${updated} jogo(s) atualizado(s)${finished ? `, ${finished} finalizado(s)` : ''}. ${unmatched.length} sem correspondência.`);
+      }
+      return { updated, finished, unmatched };
+    } catch (err) {
+      console.error('Erro ao sincronizar com ESPN:', err);
+      if (!silent) showToast('Erro ao sincronizar com a ESPN. Veja o console.', 'error');
+      return null;
+    } finally {
+      setEspnSyncing(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isAdmin || loading) return;
+    syncWithEspn(true);
+    const interval = setInterval(() => syncWithEspn(true), 3 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [isAdmin, loading]);
+
+  const updateOfficialExtra = async (field, value) => {
+    const newResults = { ...store.results, [field]: value };
+    setStore(prev => ({ ...prev, results: newResults }));
+    triggerSaveIndicator();
+    await updateResultsDb(newResults);
+  };
+
+  const updateOfficialKnockout = async (matchId, field, value) => {
+    const newResults = { ...store.results };
+    newResults.knockout = { ...(newResults.knockout || {}) };
+    newResults.knockout[matchId] = { ...(newResults.knockout[matchId] || {}), [field]: value };
+    if (field === 'scoreA' || field === 'scoreB') {
+      const a = parseInt(field === 'scoreA' ? value : newResults.knockout[matchId].scoreA);
+      const b = parseInt(field === 'scoreB' ? value : newResults.knockout[matchId].scoreB);
+      if (!isNaN(a) && !isNaN(b) && a !== b) {
+        newResults.knockout[matchId].penaltyWinner = null;
+      }
+    }
+    setStore(prev => ({ ...prev, results: newResults }));
+    triggerSaveIndicator();
+    await updateResultsDb(newResults);
+  };
+
+  const deleteUser = async (username) => {
+    if (username === 'admin') return;
+    if (!confirm(`Remover ${store.users[username].name}?`)) return;
+    await deleteUserDb(username);
+    setStore(prev => {
+      const next = { ...prev, users: { ...prev.users } };
+      delete next.users[username];
+      return next;
+    });
+    showToast('Participante removido');
+  };
+
+  if (loading) {
+    return (
+      <div className="welcome">
+        <div style={{ textAlign: 'center', padding: 40 }}>
+          <div className="welcome-trophy">🏆</div>
+          <div style={{ marginTop: 20, color: 'var(--gold)', letterSpacing: 3, fontSize: 12, textTransform: 'uppercase' }}>
+            Carregando bolão...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <>
+        <LoginScreen onLogin={handleLogin} onRegister={handleRegister} />
+        {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
+      </>
+    );
+  }
+
+  return (
+    <div className="app">
+      <Header
+        currentUser={currentUser}
+        page={page}
+        onChangePage={setPage}
+        onLogout={handleLogout}
+      />
+
+      <main className="main">
+        {page === 'palpites' && <PalpitesPage store={store} user={currentUser} updatePrediction={updatePrediction} updateExtra={updateExtra} />}
+        {page === 'mata-mata' && <MataMataPage store={store} user={currentUser} updateKnockout={updateKnockout} />}
+        {page === 'ranking' && <RankingPage store={store} />}
+        {page === 'regras' && <RegrasPage />}
+        {page === 'admin' && isAdmin && <AdminPage store={store} updateOfficialResult={updateOfficialResult} updateOfficialExtra={updateOfficialExtra} updateOfficialKnockout={updateOfficialKnockout} deleteUser={deleteUser} showToast={showToast} syncWithEspn={syncWithEspn} espnSyncing={espnSyncing} espnLastSync={espnLastSync} />}
+      </main>
+
+      <MobileNav page={page} onChange={setPage} isAdmin={isAdmin} />
+      {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
+      {showSaveIndicator && <div className="save-indicator">✓ Salvo automaticamente</div>}
+    </div>
+  );
+}
+
+// =====================================================================
+// LOGIN / REGISTER SCREEN
+// =====================================================================
+function LoginScreen({ onLogin, onRegister }) {
+  const [mode, setMode] = useState('login');
+  const [form, setForm] = useState({ username: '', password: '', name: '', whatsapp: '' });
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e) => {
+    e?.preventDefault?.();
+    if (busy) return;
+    setBusy(true);
+    try {
+      if (mode === 'login') await onLogin(form.username, form.password);
+      else await onRegister(form);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="welcome">
+      <div className="welcome-card">
+        <div className="welcome-trophy">🏆</div>
+        <h1 className="welcome-title">BOLÃO FIFA 2026</h1>
+        <div className="welcome-sub">Copa do Mundo • Americas</div>
+
+        <Countdown target={DEADLINE} />
+
+        <p className="welcome-desc">
+          {mode === 'login'
+            ? 'Entre com seu usuário para acessar seus palpites.'
+            : 'Crie sua conta e comece a palpitar!'}
+        </p>
+
+        <form className="welcome-form" onSubmit={submit}>
+          {mode === 'register' && (
+            <>
+              <div>
+                <div className="field-label">Nome completo</div>
+                <input className="field-input" placeholder="Ex: João da Silva" value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })} />
+              </div>
+              <div>
+                <div className="field-label">WhatsApp</div>
+                <input className="field-input" placeholder="(11) 99999-9999" value={form.whatsapp}
+                  onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
+              </div>
+            </>
+          )}
+          <div>
+            <div className="field-label">Usuário</div>
+            <input className="field-input" placeholder="ex: joao_silva" value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '') })} />
+          </div>
+          <div>
+            <div className="field-label">Senha</div>
+            <input className="field-input" type="password" placeholder="••••••••" value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })} />
+          </div>
+          <button type="submit" className="btn-primary" disabled={busy}>
+            {busy ? 'AGUARDE...' : (mode === 'login' ? 'ENTRAR' : 'CRIAR CONTA')}
+          </button>
+        </form>
+
+        <div className="auth-toggle">
+          {mode === 'login' ? (
+            <>Não tem conta? <button onClick={() => setMode('register')}>Criar uma</button></>
+          ) : (
+            <>Já tem conta? <button onClick={() => setMode('login')}>Entrar</button></>
+          )}
+        </div>
+
+        <div className="welcome-rules">
+          <div className="welcome-rules-title">Resumo do Bolão</div>
+          <div className="welcome-rules-row"><span>Início</span><strong>11/06/2026</strong></div>
+          <div className="welcome-rules-row"><span>Prazo dos palpites</span><strong>10/06/2026</strong></div>
+          <div className="welcome-rules-row"><span>Final</span><strong>19/07/2026 — MetLife</strong></div>
+          <div className="welcome-rules-row"><span>Acertou placar exato</span><strong>5 pts</strong></div>
+          <div className="welcome-rules-row"><span>Campeão</span><strong>25 pts</strong></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// HEADER + MOBILE NAV
+// =====================================================================
+function Header({ currentUser, page, onChangePage, onLogout }) {
+  const isAdmin = currentUser?.isAdmin;
+  const items = [
+    { id: 'palpites', label: 'Palpites' },
+    { id: 'mata-mata', label: 'Mata-mata' },
+    { id: 'ranking', label: 'Ranking' },
+    { id: 'regras', label: 'Regras' },
+  ];
+  if (isAdmin) items.push({ id: 'admin', label: 'Admin' });
+
+  return (
+    <header className="header">
+      <div className="header-inner">
+        <div className="brand">
+          <div className="brand-logo">🏆</div>
+          <div className="brand-text">
+            <div className="brand-title">BOLÃO FIFA 2026</div>
+            <div className="brand-sub">Copa Mundo • USA·MEX·CAN</div>
+          </div>
+        </div>
+
+        <nav className="header-nav">
+          {items.map(it => (
+            <button key={it.id} className={`nav-btn ${page === it.id ? 'active' : ''}`} onClick={() => onChangePage(it.id)}>
+              {it.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="header-user">
+          <div className="user-avatar" style={{ background: getAvatarColor(currentUser.name) }}>
+            {getInitials(currentUser.name)}
+          </div>
+          <div className="user-name">{currentUser.name.split(' ')[0]}</div>
+          <button className="user-logout" onClick={onLogout} title="Sair">⏏</button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function MobileNav({ page, onChange, isAdmin }) {
+  const items = [
+    { id: 'palpites', label: 'Palpites', icon: '⚽' },
+    { id: 'mata-mata', label: 'Bracket', icon: '🏆' },
+    { id: 'ranking', label: 'Ranking', icon: '🥇' },
+    { id: 'regras', label: 'Regras', icon: '📋' },
+  ];
+  if (isAdmin) items.push({ id: 'admin', label: 'Admin', icon: '⚙️' });
+
+  return (
+    <div className="mobile-nav">
+      <div className="mobile-nav-inner">
+        {items.map(it => (
+          <button key={it.id} className={`mobile-nav-btn ${page === it.id ? 'active' : ''}`} onClick={() => onChange(it.id)}>
+            <div className="icon">{it.icon}</div>
+            <div>{it.label}</div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// PALPITES PAGE
+// =====================================================================
+function PalpitesPage({ store, user, updatePrediction, updateExtra }) {
+  const [activeTab, setActiveTab] = useState('grupos');
+  const isAdmin = user.isAdmin;
+  const deadlinePassed = Date.now() >= DEADLINE;
+  const totalFilled = Object.values(user.predictions || {}).filter(p => p.home !== '' && p.away !== '').length;
+  const progress = (totalFilled / FIXTURES.length) * 100;
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-eyebrow">Faça seus palpites</div>
+        <h1 className="page-title">Seus Palpites</h1>
+        <p className="page-sub">Preencha todos os jogos. Salvamento automático.
+          Após <strong style={{color: 'var(--gold)'}}>10/06/2026 às 23:59</strong>, todos os palpites serão bloqueados.</p>
+      </div>
+
+      {deadlinePassed ? (
+        <div className="deadline-banner expired">
+          <div className="deadline-icon">🔒</div>
+          <div className="deadline-text">
+            <div className="deadline-title">Prazo encerrado</div>
+            <div className="deadline-sub">Todos os palpites estão bloqueados. Boa sorte!</div>
+          </div>
+        </div>
+      ) : (
+        <div className="deadline-banner">
+          <div className="deadline-icon">⏰</div>
+          <div className="deadline-text">
+            <div className="deadline-title">Você tem até 10/06/2026 para finalizar seus palpites</div>
+            <div className="deadline-sub">Depois desse prazo, ninguém mais consegue editar</div>
+          </div>
+          <Countdown target={DEADLINE} />
+        </div>
+      )}
+
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-label">Progresso</div>
+          <div className="stat-value">{totalFilled}/{FIXTURES.length}</div>
+          <div className="stat-meta">jogos preenchidos</div>
+          <div className="progress"><div className="progress-bar" style={{ width: `${progress}%` }} /></div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">Palpite Campeão</div>
+          <div className="stat-value" style={{ fontSize: 26 }}>
+            {user.extras?.champion ? `${FLAGS[user.extras.champion] || ''} ${user.extras.champion}` : '—'}
+          </div>
+          <div className="stat-meta">25 pts se acertar</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">Artilheiro</div>
+          <div className="stat-value" style={{ fontSize: 22 }}>{user.extras?.topScorer || '—'}</div>
+          <div className="stat-meta">15 pts se acertar</div>
+        </div>
+      </div>
+
+      <div className="tabs">
+        <button className={`tab ${activeTab === 'grupos' ? 'active' : ''}`} onClick={() => setActiveTab('grupos')}>Fase de Grupos</button>
+        <button className={`tab ${activeTab === 'finais' ? 'active' : ''}`} onClick={() => setActiveTab('finais')}>Palpites Finais</button>
+        <button className={`tab ${activeTab === 'classificacao' ? 'active' : ''}`} onClick={() => setActiveTab('classificacao')}>Minha Classificação</button>
+      </div>
+
+      {activeTab === 'grupos' && (
+        <div>
+          {Object.keys(GROUPS).map(g => (
+            <GroupSection key={g} group={g} predictions={user.predictions} updatePrediction={updatePrediction} isAdmin={isAdmin} />
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'finais' && (
+        <ExtraPicks user={user} updateExtra={updateExtra} />
+      )}
+
+      {activeTab === 'classificacao' && (
+        <UserStandings predictions={user.predictions} />
+      )}
+    </div>
+  );
+}
+
+// =====================================================================
+// GROUP SECTION
+// =====================================================================
+function GroupSection({ group, predictions, updatePrediction, isAdmin }) {
+  const fixtures = FIXTURES.filter(f => f.group === group);
+  const standings = useMemo(() => calcStandings(predictions, group), [predictions, group]);
+
+  return (
+    <div className="group-section">
+      <div className="group-header">
+        <div className="group-badge">{group}</div>
+        <div className="group-title">Grupo {group}</div>
+        <div className="group-meta">{GROUPS[group].map(t => FLAGS[t]).join(' ')}</div>
+      </div>
+
+      <div className="match-list">
+        {fixtures.map(fix => (
+          <MatchCard key={fix.id} fix={fix} pred={predictions?.[fix.id]} update={updatePrediction} isAdmin={isAdmin} />
+        ))}
+      </div>
+
+      <div className="standings">
+        <div className="standings-row head">
+          <div className="pos">#</div>
+          <div>Time</div>
+          <div className="num">P</div>
+          <div className="num">V</div>
+          <div className="num">E</div>
+          <div className="num">D</div>
+          <div className="num">SG</div>
+          <div className="num">PTS</div>
+        </div>
+        {standings.map((r, idx) => (
+          <div key={r.team} className={`standings-row ${idx < 2 ? 'qualified' : idx === 2 ? 'third' : ''}`}>
+            <div className="pos">{idx + 1}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 16 }}>{FLAGS[r.team]}</span>
+              <span style={{ fontSize: 12 }}>{r.team}</span>
+            </div>
+            <div className="num">{r.p}</div>
+            <div className="num">{r.w}</div>
+            <div className="num">{r.d}</div>
+            <div className="num">{r.l}</div>
+            <div className="num">{r.gd > 0 ? '+' : ''}{r.gd}</div>
+            <div className="num" style={{ color: 'var(--gold-bright)', fontWeight: 700 }}>{r.pts}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// MATCH CARD
+// =====================================================================
+function MatchCard({ fix, pred, update, isAdmin }) {
+  const dt = fmtDateBR(fix.date);
+  const locked = !isAdmin && isMatchLocked(fix.date);
+  const homeVal = pred?.home ?? '';
+  const awayVal = pred?.away ?? '';
+  const filled = homeVal !== '' && awayVal !== '';
+
+  return (
+    <div className={`match-card ${locked ? 'locked' : ''}`}>
+      <div className="match-date">
+        <strong>{dt.weekday} {dt.day}</strong>
+        <span>{dt.time} • {fix.venue}</span>
+      </div>
+      <div className="match-team">
+        <span className="team-flag">{FLAGS[fix.home]}</span>
+        <span className="team-name">{fix.home}</span>
+      </div>
+      <div className="match-score">
+        <input
+          type="number" min="0" max="20"
+          className={`score-input ${homeVal !== '' ? 'filled' : ''}`}
+          value={homeVal}
+          onChange={(e) => update(fix.id, 'home', e.target.value)}
+          disabled={locked}
+          placeholder="—"
+          style={{ color: '#f4d35e', WebkitTextFillColor: '#f4d35e', backgroundColor: 'rgba(0,0,0,0.5)' }}
+        />
+        <span className="score-sep">×</span>
+        <input
+          type="number" min="0" max="20"
+          className={`score-input ${awayVal !== '' ? 'filled' : ''}`}
+          value={awayVal}
+          onChange={(e) => update(fix.id, 'away', e.target.value)}
+          disabled={locked}
+          placeholder="—"
+          style={{ color: '#f4d35e', WebkitTextFillColor: '#f4d35e', backgroundColor: 'rgba(0,0,0,0.5)' }}
+        />
+      </div>
+      <div className="match-team right">
+        <span className="team-name">{fix.away}</span>
+        <span className="team-flag">{FLAGS[fix.away]}</span>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// EXTRA PICKS
+// =====================================================================
+function ExtraPicks({ user, updateExtra }) {
+  const e = user.extras || {};
+  const deadlinePassed = Date.now() >= DEADLINE;
+
+  const champion = e.champion;
+  const vice = e.vice;
+  const third = e.third;
+  const fourth = e.fourth;
+  const semis = [champion, vice, third, fourth].filter(Boolean);
+  const hasDuplicate = new Set(semis).size !== semis.length;
+
+  return (
+    <div>
+      {hasDuplicate && (
+        <div className="inconsistency">
+          ⚠️ Você selecionou o mesmo time em mais de uma posição final. Revise seus palpites.
+        </div>
+      )}
+
+      <div className="section-title">🏆 Top 4 da Copa</div>
+      <div className="extra-picks">
+        <div className="pick-card">
+          <div className="pick-label">🥇 Campeão (+25 pts)</div>
+          <select className="pick-select" value={e.champion || ''} onChange={(ev) => updateExtra('champion', ev.target.value)} disabled={deadlinePassed && !user.isAdmin}>
+            <option value="">— Escolha —</option>
+            {ALL_TEAMS.map(t => <option key={t} value={t}>{FLAGS[t]} {t}</option>)}
+          </select>
+        </div>
+        <div className="pick-card">
+          <div className="pick-label">🥈 Vice (+18 pts)</div>
+          <select className="pick-select" value={e.vice || ''} onChange={(ev) => updateExtra('vice', ev.target.value)} disabled={deadlinePassed && !user.isAdmin}>
+            <option value="">— Escolha —</option>
+            {ALL_TEAMS.map(t => <option key={t} value={t}>{FLAGS[t]} {t}</option>)}
+          </select>
+        </div>
+        <div className="pick-card">
+          <div className="pick-label">🥉 3º colocado (+12 pts)</div>
+          <select className="pick-select" value={e.third || ''} onChange={(ev) => updateExtra('third', ev.target.value)} disabled={deadlinePassed && !user.isAdmin}>
+            <option value="">— Escolha —</option>
+            {ALL_TEAMS.map(t => <option key={t} value={t}>{FLAGS[t]} {t}</option>)}
+          </select>
+        </div>
+        <div className="pick-card">
+          <div className="pick-label">4º colocado (+10 pts)</div>
+          <select className="pick-select" value={e.fourth || ''} onChange={(ev) => updateExtra('fourth', ev.target.value)} disabled={deadlinePassed && !user.isAdmin}>
+            <option value="">— Escolha —</option>
+            {ALL_TEAMS.map(t => <option key={t} value={t}>{FLAGS[t]} {t}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div className="section-title">⚽ Artilheiro da Copa</div>
+      <div className="pick-card" style={{ maxWidth: 480 }}>
+        <div className="pick-label">Quem será o artilheiro? (+15 pts)</div>
+        <input
+          className="pick-input"
+          value={e.topScorer || ''}
+          onChange={(ev) => updateExtra('topScorer', ev.target.value)}
+          placeholder="Ex: Mbappé, Vinicius Jr., Haaland..."
+          disabled={deadlinePassed && !user.isAdmin}
+        />
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// USER STANDINGS
+// =====================================================================
+function UserStandings({ predictions }) {
+  const qualified = useMemo(() => getQualifiedTeams(predictions), [predictions]);
+  return (
+    <div>
+      <div className="section-title">📊 Sua Projeção dos Grupos</div>
+      <p className="page-sub" style={{ marginBottom: 20 }}>
+        Veja como você imagina que ficará a classificação dos grupos com base nos placares que você palpitou.
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16 }}>
+        {Object.keys(GROUPS).map(g => (
+          <div key={g}>
+            <div className="group-header" style={{ marginBottom: 8 }}>
+              <div className="group-badge">{g}</div>
+              <div className="group-title">Grupo {g}</div>
+            </div>
+            <div className="standings">
+              {calcStandings(predictions, g).map((r, idx) => (
+                <div key={r.team} className={`standings-row ${idx < 2 ? 'qualified' : idx === 2 ? 'third' : ''}`} style={{gridTemplateColumns: '30px 1fr 30px 30px'}}>
+                  <div className="pos">{idx + 1}</div>
+                  <div style={{display: 'flex', alignItems: 'center', gap: 8, fontSize: 12}}>
+                    <span style={{ fontSize: 16 }}>{FLAGS[r.team]}</span>{r.team}
+                  </div>
+                  <div className="num">{r.gd > 0 ? '+' : ''}{r.gd}</div>
+                  <div className="num" style={{ color: 'var(--gold-bright)', fontWeight: 700 }}>{r.pts}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="section-title">🥉 Melhores 3º colocados</div>
+      <div className="standings" style={{maxWidth: 600}}>
+        <div className="standings-row head" style={{ gridTemplateColumns: '30px 30px 1fr 40px 40px 40px' }}>
+          <div className="pos">#</div>
+          <div>Grupo</div>
+          <div>Time</div>
+          <div className="num">SG</div>
+          <div className="num">GP</div>
+          <div className="num">PTS</div>
+        </div>
+        {qualified.thirdPlaces.map((r, idx) => (
+          <div key={`${r.group}-${r.team}`} className={`standings-row qualified`} style={{ gridTemplateColumns: '30px 30px 1fr 40px 40px 40px' }}>
+            <div className="pos">{idx + 1}</div>
+            <div style={{ fontWeight: 700, color: 'var(--gold)' }}>{r.group}</div>
+            <div style={{display: 'flex', alignItems: 'center', gap: 8, fontSize: 12}}>
+              <span style={{ fontSize: 16 }}>{FLAGS[r.team]}</span>{r.team}
+            </div>
+            <div className="num">{r.gd > 0 ? '+' : ''}{r.gd}</div>
+            <div className="num">{r.gf}</div>
+            <div className="num" style={{ color: 'var(--gold-bright)', fontWeight: 700 }}>{r.pts}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// MATA-MATA PAGE
+// =====================================================================
+function MataMataPage({ store, user, updateKnockout }) {
+  const [activePhase, setActivePhase] = useState('R32');
+  const [viewMode, setViewMode] = useState('visual');
+  const [editingMatchId, setEditingMatchId] = useState(null);
+  const isAdmin = user.isAdmin;
+
+  const allKO = useMemo(
+    () => resolveAllKnockout(user.predictions, user.knockout || {}),
+    [user.predictions, user.knockout]
+  );
+
+  const phaseStats = useMemo(() => {
+    const out = {};
+    KO_PHASE_ORDER.forEach(phase => {
+      const matches = allKO[phase] || [];
+      const total = matches.length;
+      const filled = matches.filter(m => m.winnerTeam).length;
+      out[phase] = { total, filled, ready: matches.filter(m => m.teamA && m.teamB).length };
+    });
+    return out;
+  }, [allKO]);
+
+  const finalMatch = allKO.F?.[0];
+  const champion = finalMatch?.winnerTeam || '';
+  const vice = finalMatch && finalMatch.winnerTeam
+    ? (finalMatch.winnerTeam === finalMatch.teamA ? finalMatch.teamB : finalMatch.teamA)
+    : '';
+
+  const tpMatch = allKO.TP?.[0];
+  const third = tpMatch?.winnerTeam || '';
+  const fourth = tpMatch && tpMatch.winnerTeam
+    ? (tpMatch.winnerTeam === tpMatch.teamA ? tpMatch.teamB : tpMatch.teamA)
+    : '';
+
+  const findMatchById = (id) => {
+    for (const phase of KO_PHASE_ORDER) {
+      const m = (allKO[phase] || []).find(mm => mm.id === id);
+      if (m) return { ...m, phase };
+    }
+    return null;
+  };
+  const editingMatch = editingMatchId ? findMatchById(editingMatchId) : null;
+
+  const allMatchesFlat = useMemo(() => {
+    const flat = [];
+    KO_PHASE_ORDER.forEach(phase => {
+      (allKO[phase] || []).forEach(m => flat.push({ ...m, phase }));
+    });
+    return flat;
+  }, [allKO]);
+  const currentIdx = editingMatchId ? allMatchesFlat.findIndex(m => m.id === editingMatchId) : -1;
+  const prevMatch = currentIdx > 0 ? allMatchesFlat[currentIdx - 1] : null;
+  const nextMatch = currentIdx >= 0 && currentIdx < allMatchesFlat.length - 1 ? allMatchesFlat[currentIdx + 1] : null;
+
+  const groupsComplete = FIXTURES.every(f => {
+    const p = user.predictions?.[f.id];
+    return p && p.home !== '' && p.away !== '';
+  });
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-eyebrow">Mata-Mata</div>
+        <h1 className="page-title">Chaveamento Eliminatório</h1>
+        <p className="page-sub">
+          Preencha os placares de cada fase. <strong style={{color: 'var(--gold)'}}>Os vencedores avançam automaticamente</strong> para a próxima fase.
+          Em caso de empate, escolha quem passa nos pênaltis.
+        </p>
+      </div>
+
+      {!groupsComplete && (
+        <div className="deadline-banner" style={{ background: 'rgba(0,240,255,0.06)', borderColor: 'rgba(0,240,255,0.3)' }}>
+          <div className="deadline-icon">💡</div>
+          <div className="deadline-text">
+            <div className="deadline-title">Dica: preencha primeiro toda a fase de grupos</div>
+            <div className="deadline-sub">Os classificados aparecem aqui automaticamente conforme você define os grupos.</div>
+          </div>
+        </div>
+      )}
+
+      <div className="bracket-toggle">
+        <button
+          className={`bracket-toggle-btn ${viewMode === 'visual' ? 'active' : ''}`}
+          onClick={() => setViewMode('visual')}
+        >
+          🏆 Chaveamento
+        </button>
+        <button
+          className={`bracket-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+          onClick={() => setViewMode('list')}
+        >
+          📋 Por Fase
+        </button>
+      </div>
+
+      {viewMode === 'visual' && (
+        <>
+          <div className="trophy-display">
+            <div className="trophy-label">Seu palpite</div>
+            <div className="trophy-icon">🏆</div>
+            {champion ? (
+              <>
+                <div className="trophy-flag">{FLAGS[champion] || '🏳️'}</div>
+                <div className="trophy-name">{champion}</div>
+                <div style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: 2, marginTop: 6 }}>CAMPEÃO DA COPA 2026</div>
+              </>
+            ) : (
+              <div className="trophy-pending" style={{ fontSize: 14, marginTop: 12 }}>
+                Defina sua final para revelar o campeão
+              </div>
+            )}
+          </div>
+
+          <BracketVisual allKO={allKO} onMatchClick={setEditingMatchId} />
+          <SurvivalPreviewCard allKO={allKO} store={store} />
+
+          {(champion || vice || third || fourth) && (
+            <>
+              <div className="section-title">📊 Resumo dos Palpites</div>
+              <div className="stats-grid">
+                <div className="stat-card">
+                  <div className="stat-label">🥇 Campeão</div>
+                  <div className="stat-value" style={{ fontSize: 22 }}>
+                    {champion ? `${FLAGS[champion] || ''} ${champion}` : '—'}
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-label">🥈 Vice</div>
+                  <div className="stat-value" style={{ fontSize: 22 }}>
+                    {vice ? `${FLAGS[vice] || ''} ${vice}` : '—'}
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-label">🥉 Terceiro</div>
+                  <div className="stat-value" style={{ fontSize: 22 }}>
+                    {third ? `${FLAGS[third] || ''} ${third}` : '—'}
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-label">4º colocado</div>
+                  <div className="stat-value" style={{ fontSize: 22 }}>
+                    {fourth ? `${FLAGS[fourth] || ''} ${fourth}` : '—'}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </>
+      )}
+
+      {viewMode === 'list' && (
+        <>
+          <div className="ko-phases-nav">
+            {KO_PHASE_ORDER.map(phase => {
+              const info = KO_PHASE_INFO[phase];
+              const stats = phaseStats[phase];
+              const done = stats.filled === stats.total && stats.total > 0;
+              return (
+                <button
+                  key={phase}
+                  className={`ko-phase-btn ${activePhase === phase ? 'active' : ''} ${done ? 'done' : ''}`}
+                  onClick={() => setActivePhase(phase)}
+                >
+                  <span>{info.icon} {info.shortLabel}</span>
+                  <span className="badge-mini">{stats.filled}/{stats.total}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <KoPhaseSection
+            phase={activePhase}
+            matches={allKO[activePhase] || []}
+            updateKnockout={updateKnockout}
+            isAdmin={isAdmin}
+          />
+        </>
+      )}
+
+      {editingMatch && (
+        <BracketEditModal
+          match={editingMatch}
+          updateKnockout={updateKnockout}
+          isAdmin={isAdmin}
+          onClose={() => setEditingMatchId(null)}
+          onPrev={prevMatch ? () => setEditingMatchId(prevMatch.id) : null}
+          onNext={nextMatch ? () => setEditingMatchId(nextMatch.id) : null}
+        />
+      )}
+    </div>
+  );
+}
+
+// =====================================================================
+// BRACKET VISUAL
+// =====================================================================
+function BracketVisual({ allKO, onMatchClick }) {
+  const r32 = allKO.R32 || [];
+  const r16 = allKO.R16 || [];
+  const qf = allKO.QF || [];
+  const sf = allKO.SF || [];
+  const f = allKO.F || [];
+  const tp = allKO.TP || [];
+
+  const leftR32 = r32.slice(0, 8);
+  const rightR32 = r32.slice(8, 16);
+  const leftR16 = r16.slice(0, 4);
+  const rightR16 = r16.slice(4, 8);
+  const leftQF = qf.slice(0, 2);
+  const rightQF = qf.slice(2, 4);
+  const leftSF = sf[0];
+  const rightSF = sf[1];
+  const finalMatch = f[0];
+  const thirdMatch = tp[0];
+
+  return (
+    <>
+      <div className="bracket-canvas">
+        <div className="bracket-tree">
+          <div className="bracket-col">
+            <div className="bracket-col-title">
+              16-AVOS
+              <span className="col-points">ATÉ 9 PTS</span>
+            </div>
+            {leftR32.map(m => <BracketMatch key={m.id} match={m} onClick={onMatchClick} />)}
+          </div>
+
+          <div className="bracket-col">
+            <div className="bracket-col-title">
+              OITAVAS
+              <span className="col-points">ATÉ 12 PTS</span>
+            </div>
+            {leftR16.map(m => <BracketMatch key={m.id} match={m} onClick={onMatchClick} />)}
+          </div>
+
+          <div className="bracket-col">
+            <div className="bracket-col-title">
+              QUARTAS
+              <span className="col-points">ATÉ 16 PTS</span>
+            </div>
+            {leftQF.map(m => <BracketMatch key={m.id} match={m} onClick={onMatchClick} />)}
+            <div style={{ marginTop: 'auto', paddingTop: 20 }}>
+              <div className="bracket-col-title" style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 16, borderColor: 'rgba(255,255,255,0.05)' }}>SEMI ESQ.</div>
+              {leftSF && <BracketMatch match={leftSF} onClick={onMatchClick} />}
+            </div>
+          </div>
+
+          <div className="bracket-col final-col">
+            <div className="bracket-col-title">
+              FINAL 🏆
+              <span className="col-points">ATÉ 27 PTS</span>
+            </div>
+            {finalMatch && <BracketMatch match={finalMatch} onClick={onMatchClick} />}
+            <div style={{ marginTop: 14 }}>
+              <div className="bracket-col-title" style={{ fontSize: 11, color: '#cd7f32', marginTop: 10, borderColor: 'rgba(205,127,50,0.2)' }}>3º LUGAR 🥉</div>
+              {thirdMatch && <BracketMatch match={thirdMatch} onClick={onMatchClick} />}
+            </div>
+          </div>
+
+          <div className="bracket-col">
+            <div className="bracket-col-title">
+              QUARTAS
+              <span className="col-points">ATÉ 16 PTS</span>
+            </div>
+            {rightQF.map(m => <BracketMatch key={m.id} match={m} onClick={onMatchClick} />)}
+            <div style={{ marginTop: 'auto', paddingTop: 20 }}>
+              <div className="bracket-col-title" style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 16, borderColor: 'rgba(255,255,255,0.05)' }}>SEMI DIR.</div>
+              {rightSF && <BracketMatch match={rightSF} onClick={onMatchClick} />}
+            </div>
+          </div>
+
+          <div className="bracket-col">
+            <div className="bracket-col-title">
+              OITAVAS
+              <span className="col-points">ATÉ 12 PTS</span>
+            </div>
+            {rightR16.map(m => <BracketMatch key={m.id} match={m} onClick={onMatchClick} />)}
+          </div>
+
+          <div className="bracket-col">
+            <div className="bracket-col-title">
+              16-AVOS
+              <span className="col-points">ATÉ 9 PTS</span>
+            </div>
+            {rightR32.map(m => <BracketMatch key={m.id} match={m} onClick={onMatchClick} />)}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ textAlign: 'center', marginTop: 12, color: 'var(--text-muted)', fontSize: 11, letterSpacing: 1 }}>
+        💡 <strong style={{ color: 'var(--gold)' }}>Clique em qualquer jogo</strong> para preencher o placar
+        {window.innerWidth < 1024 && ' • Arraste para o lado para ver tudo'}
+      </div>
+    </>
+  );
+}
+
+// =====================================================================
+// BRACKET MATCH
+// =====================================================================
+function BracketMatch({ match, onClick }) {
+  const ready = match.teamA && match.teamB;
+  const isComplete = !!match.winnerTeam;
+  const a = parseInt(match.scoreA);
+  const b = parseInt(match.scoreB);
+  const isDraw = !isNaN(a) && !isNaN(b) && a === b && match.penaltyWinner;
+
+  return (
+    <div
+      className={`bk-match ${isComplete ? 'complete' : ''} ${!ready ? 'pending' : ''}`}
+      onClick={() => ready && onClick && onClick(match.id)}
+      title={ready ? 'Clique para editar' : 'Aguardando definição dos times'}
+    >
+      <div className="bk-match-id">{match.id}</div>
+      <div className={`bk-team ${match.winnerTeam === match.teamA ? 'winner' : ''}`}>
+        <span className="flag-mini">{match.teamA ? FLAGS[match.teamA] || '🏳️' : '⏳'}</span>
+        <span className={`nm ${!match.teamA ? 'pending' : ''}`}>
+          {match.teamA || 'Aguardando...'}
+        </span>
+        <span className={`sc ${match.scoreA === '' || match.scoreA === undefined || match.scoreA === null ? 'empty' : ''}`}>
+          {match.scoreA !== '' && match.scoreA !== undefined && match.scoreA !== null ? match.scoreA : '—'}
+        </span>
+      </div>
+      <div className={`bk-team ${match.winnerTeam === match.teamB ? 'winner' : ''}`}>
+        <span className="flag-mini">{match.teamB ? FLAGS[match.teamB] || '🏳️' : '⏳'}</span>
+        <span className={`nm ${!match.teamB ? 'pending' : ''}`}>
+          {match.teamB || 'Aguardando...'}
+        </span>
+        <span className={`sc ${match.scoreB === '' || match.scoreB === undefined || match.scoreB === null ? 'empty' : ''}`}>
+          {match.scoreB !== '' && match.scoreB !== undefined && match.scoreB !== null ? match.scoreB : '—'}
+        </span>
+      </div>
+      {isDraw && (
+        <div className="bk-pen-indicator" style={{ position: 'static', marginTop: 4, padding: 0 }}>
+          🥅 Pênaltis: {match.penaltyWinner === 'A' ? match.teamA : match.teamB}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =====================================================================
+// BRACKET EDIT MODAL
+// =====================================================================
+function BracketEditModal({ match, updateKnockout, isAdmin, onClose, onPrev, onNext }) {
+  const dt = fmtDateBR(match.date);
+  const locked = !isAdmin && (Date.now() >= DEADLINE);
+  const phaseInfo = KO_PHASE_INFO[match.phase] || { label: 'Jogo', icon: '⚽', points: 0 };
+
+  const a = parseInt(match.scoreA);
+  const b = parseInt(match.scoreB);
+  const hasScores = !isNaN(a) && !isNaN(b);
+  const isDraw = hasScores && a === b;
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowLeft' && onPrev) onPrev();
+      else if (e.key === 'ArrowRight' && onNext) onNext();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose, onPrev, onNext]);
+
+  return (
+    <div className="bk-edit-overlay" onClick={onClose}>
+      <div className="bk-edit-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="bk-edit-close" onClick={onClose} title="Fechar (ESC)">×</button>
+
+        <div className="bk-edit-eyebrow">{phaseInfo.icon} {phaseInfo.label} • {phaseInfo.points} pts</div>
+        <div className="bk-edit-title">{match.id}</div>
+        <div className="bk-edit-date">{dt.weekday} {dt.day} • {dt.time}</div>
+
+        <div className="bk-edit-versus">
+          <div className="bk-edit-team">
+            <span className="flag-big">{FLAGS[match.teamA] || '🏳️'}</span>
+            <span className={`nm-big ${match.winnerTeam === match.teamA ? 'winner-text' : ''}`}>{match.teamA}</span>
+            <input
+              type="number"
+              min="0" max="20"
+              className="bk-edit-score"
+              value={match.scoreA ?? ''}
+              onChange={(e) => updateKnockout(match.id, 'scoreA', e.target.value)}
+              disabled={locked}
+              placeholder="0"
+              autoFocus
+              style={{ color: '#f4d35e', WebkitTextFillColor: '#f4d35e', backgroundColor: 'rgba(0,0,0,0.5)' }}
+            />
+          </div>
+          <div className="bk-edit-vs">×</div>
+          <div className="bk-edit-team">
+            <span className="flag-big">{FLAGS[match.teamB] || '🏳️'}</span>
+            <span className={`nm-big ${match.winnerTeam === match.teamB ? 'winner-text' : ''}`}>{match.teamB}</span>
+            <input
+              type="number"
+              min="0" max="20"
+              className="bk-edit-score"
+              value={match.scoreB ?? ''}
+              onChange={(e) => updateKnockout(match.id, 'scoreB', e.target.value)}
+              disabled={locked}
+              placeholder="0"
+              style={{ color: '#f4d35e', WebkitTextFillColor: '#f4d35e', backgroundColor: 'rgba(0,0,0,0.5)' }}
+            />
+          </div>
+        </div>
+
+        {isDraw && (
+          <div className="ko-penalty-section">
+            <div className="ko-penalty-label">
+              ⚠️ Jogo empatado — como foi decidido?
+            </div>
+            <div className="ko-tiebreak-mode">
+              <button
+                className={(match.tiebreakMode || 'penalty') === 'extratime' ? 'active' : ''}
+                onClick={() => updateKnockout(match.id, 'tiebreakMode', 'extratime')}
+                disabled={locked}
+              >
+                ⏱️ Prorrogação
+              </button>
+              <button
+                className={(match.tiebreakMode || 'penalty') === 'penalty' ? 'active' : ''}
+                onClick={() => updateKnockout(match.id, 'tiebreakMode', 'penalty')}
+                disabled={locked}
+              >
+                🥅 Pênaltis
+              </button>
+            </div>
+            <div className="ko-penalty-label" style={{ fontSize: 10, marginTop: 4 }}>
+              Quem avançou?
+            </div>
+            <div className="ko-penalty-buttons">
+              <button
+                className={`ko-penalty-btn ${match.penaltyWinner === 'A' ? 'selected' : ''}`}
+                onClick={() => updateKnockout(match.id, 'penaltyWinner', 'A')}
+                disabled={locked}
+              >
+                <span>{FLAGS[match.teamA]}</span>
+                <span>{match.teamA}</span>
+              </button>
+              <button
+                className={`ko-penalty-btn ${match.penaltyWinner === 'B' ? 'selected' : ''}`}
+                onClick={() => updateKnockout(match.id, 'penaltyWinner', 'B')}
+                disabled={locked}
+              >
+                <span>{FLAGS[match.teamB]}</span>
+                <span>{match.teamB}</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {match.winnerTeam && (
+          <div style={{ textAlign: 'center', marginTop: 16 }}>
+            <div className="ko-winner-tag">
+              <span>✓ Avança:</span>
+              <span>{FLAGS[match.winnerTeam]}</span>
+              <strong>{match.winnerTeam}</strong>
+              {isDraw && (
+                <span style={{ fontSize: 9, opacity: 0.7, marginLeft: 4 }}>
+                  ({(match.tiebreakMode || 'penalty') === 'extratime' ? 'PRORROG.' : 'PÊNALTIS'})
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="bk-edit-nav">
+          <button onClick={onPrev} disabled={!onPrev}>← Anterior</button>
+          <button onClick={onClose}>Fechar</button>
+          <button onClick={onNext} disabled={!onNext}>Próximo →</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// SURVIVAL PREVIEW
+// =====================================================================
+function SurvivalPreviewCard({ allKO, store }) {
+  const userSurvivors = useMemo(() => getSurvivorsByPhase(allKO), [allKO]);
+
+  const realAllKO = useMemo(() => {
+    if (!store?.results) return null;
+    const hasOfficial = store.results.knockout && Object.keys(store.results.knockout).some(k => {
+      const m = store.results.knockout[k];
+      return m && (m.scoreA !== '' && m.scoreA !== undefined && m.scoreA !== null);
+    });
+    if (!hasOfficial) return null;
+    return resolveAllKnockout(
+      store.results.matches ? Object.fromEntries(Object.entries(store.results.matches).map(([k,v])=>[k,{home:v.home,away:v.away}])) : {},
+      store.results.knockout || {}
+    );
+  }, [store?.results]);
+
+  const realSurvivors = realAllKO ? getSurvivorsByPhase(realAllKO) : null;
+
+  const phases = [
+    { key: 'R16', label: 'Oitavas', icon: '🛡️', target: 16, pts: 1 },
+    { key: 'QF',  label: 'Quartas', icon: '🔥', target: 8,  pts: 2 },
+    { key: 'SF',  label: 'Semis',   icon: '⚡', target: 4,  pts: 3 },
+    { key: 'F',   label: 'Final',   icon: '🏆', target: 2,  pts: 5 },
+  ];
+
+  return (
+    <>
+      <div className="section-title">🎯 Bônus por Sobrevivência</div>
+      <div className="rule-card" style={{ background: 'rgba(168,85,247,0.05)', borderColor: 'rgba(168,85,247,0.25)', marginBottom: 16 }}>
+        <p style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.6, marginBottom: 14 }}>
+          Mesmo que você erre a chave, ganha pontos por cada time do seu palpite que <strong style={{color: 'var(--purple)'}}>realmente chegar</strong> a cada fase. Recompensa o feeling! 🧠
+        </p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10 }}>
+          {phases.map(p => {
+            const myTeams = [...userSurvivors[p.key]];
+            const realTeams = realSurvivors ? [...realSurvivors[p.key]] : null;
+            const matched = realTeams ? myTeams.filter(t => realSurvivors[p.key].has(t)) : [];
+            return (
+              <div key={p.key} style={{
+                background: 'rgba(0,0,0,0.3)',
+                border: '1px solid rgba(168,85,247,0.2)',
+                borderRadius: 10,
+                padding: 12,
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'var(--purple)' }}>
+                    {p.icon} {p.label}
+                  </div>
+                  <div style={{ fontFamily: 'Space Mono', fontSize: 10, color: 'var(--text-muted)' }}>
+                    +{p.pts} pt/time
+                  </div>
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--text-dim)', marginBottom: 8 }}>
+                  {realTeams ? (
+                    <>Acertos: <strong style={{color: 'var(--gold-bright)'}}>{matched.length}/{myTeams.length}</strong> = <strong style={{color: 'var(--gold-bright)'}}>+{matched.length * p.pts} pts</strong></>
+                  ) : (
+                    <>Seu palpite: <strong>{myTeams.length}/{p.target}</strong> times</>
+                  )}
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  {myTeams.length === 0 ? (
+                    <span style={{ fontSize: 11, color: 'var(--text-muted)', fontStyle: 'italic' }}>Aguardando palpites...</span>
+                  ) : (
+                    myTeams.map(t => {
+                      const isMatched = realSurvivors && realSurvivors[p.key].has(t);
+                      return (
+                        <span key={t} style={{
+                          fontSize: 10,
+                          padding: '3px 8px',
+                          borderRadius: 100,
+                          background: realSurvivors ? (isMatched ? 'rgba(0,214,138,0.15)' : 'rgba(255,77,109,0.1)') : 'rgba(255,255,255,0.06)',
+                          color: realSurvivors ? (isMatched ? 'var(--green)' : 'var(--red)') : 'var(--text)',
+                          border: `1px solid ${realSurvivors ? (isMatched ? 'rgba(0,214,138,0.3)' : 'rgba(255,77,109,0.2)') : 'rgba(255,255,255,0.1)'}`,
+                          whiteSpace: 'nowrap',
+                        }}>
+                          {FLAGS[t]} {t}
+                        </span>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {realSurvivors && (
+          <div style={{
+            marginTop: 14, padding: 12,
+            background: 'linear-gradient(90deg, rgba(168,85,247,0.15), rgba(212,175,55,0.1))',
+            borderRadius: 10,
+            textAlign: 'center',
+          }}>
+            <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>BÔNUS TOTAL POR SOBREVIVÊNCIA: </span>
+            <strong style={{ fontSize: 18, color: 'var(--gold-bright)', fontFamily: 'Bebas Neue', letterSpacing: 1 }}>
+              +{phases.reduce((acc, p) => {
+                const myTeams = [...userSurvivors[p.key]];
+                const matched = myTeams.filter(t => realSurvivors[p.key].has(t));
+                return acc + matched.length * p.pts;
+              }, 0)} PTS
+            </strong>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// =====================================================================
+// KO PHASE SECTION
+// =====================================================================
+function KoPhaseSection({ phase, matches, updateKnockout, isAdmin }) {
+  const info = KO_PHASE_INFO[phase];
+  const totalMax = info.points + (info.winnerBonus || 0) + (info.exactBonus || 0);
+
+  return (
+    <div>
+      <div className="ko-progress">
+        <div style={{ fontSize: 20 }}>{info.icon}</div>
+        <div className="ko-progress-text">
+          <strong>{info.label}</strong> • {matches.length} {matches.length === 1 ? 'jogo' : 'jogos'}
+          <div style={{ fontSize: 11, marginTop: 4, color: 'var(--text-muted)' }}>
+            Confronto: <strong style={{color: 'var(--gold)'}}>{info.points}</strong> pts &nbsp;•&nbsp;
+            + Vencedor: <strong style={{color: 'var(--gold)'}}>{info.winnerBonus}</strong> pts &nbsp;•&nbsp;
+            + Placar exato: <strong style={{color: 'var(--gold)'}}>{info.exactBonus}</strong> pts &nbsp;•&nbsp;
+            <strong style={{color: 'var(--gold-bright)'}}>até {totalMax} pts/jogo</strong>
+          </div>
+        </div>
+      </div>
+
+      <div className="ko-grid">
+        {matches.map(m => (
+          <KoMatchCard
+            key={m.id}
+            match={m}
+            updateKnockout={updateKnockout}
+            isAdmin={isAdmin}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// KO MATCH CARD
+// =====================================================================
+function KoMatchCard({ match, updateKnockout, isAdmin }) {
+  const dt = fmtDateBR(match.date);
+  const locked = !isAdmin && (Date.now() >= DEADLINE);
+  const isReady = match.teamA && match.teamB;
+  const hasScores = match.scoreA !== '' && match.scoreB !== '';
+  const a = parseInt(match.scoreA);
+  const b = parseInt(match.scoreB);
+  const isDraw = hasScores && !isNaN(a) && !isNaN(b) && a === b;
+  const isComplete = !!match.winnerTeam;
+
+  return (
+    <div className={`ko-match ${isComplete ? 'complete' : ''} ${locked ? 'locked' : ''}`}>
+      <div className="ko-match-header">
+        <span className="ko-match-id">{match.id}</span>
+        <span>{dt.weekday} {dt.day} • {dt.time}</span>
+      </div>
+
+      {!isReady && (
+        <div style={{ padding: '20px 10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: 12, fontStyle: 'italic' }}>
+          Aguardando definição dos times
+        </div>
+      )}
+
+      {isReady && (
+        <>
+          <div className="ko-match-row">
+            <div className="ko-team-flag">{FLAGS[match.teamA] || '🏳️'}</div>
+            <div className={`ko-team-name ${match.winnerTeam === match.teamA ? 'winner' : ''}`}>
+              {match.teamA}
+            </div>
+            <input
+              type="number"
+              min="0"
+              max="20"
+              className="ko-score-input"
+              value={match.scoreA ?? ''}
+              onChange={(e) => updateKnockout(match.id, 'scoreA', e.target.value)}
+              disabled={locked}
+              placeholder="—"
+              style={{ color: '#f4d35e', WebkitTextFillColor: '#f4d35e', backgroundColor: 'rgba(0,0,0,0.5)' }}
+            />
+          </div>
+
+          <div className="ko-match-row">
+            <div className="ko-team-flag">{FLAGS[match.teamB] || '🏳️'}</div>
+            <div className={`ko-team-name ${match.winnerTeam === match.teamB ? 'winner' : ''}`}>
+              {match.teamB}
+            </div>
+            <input
+              type="number"
+              min="0"
+              max="20"
+              className="ko-score-input"
+              value={match.scoreB ?? ''}
+              onChange={(e) => updateKnockout(match.id, 'scoreB', e.target.value)}
+              disabled={locked}
+              placeholder="—"
+              style={{ color: '#f4d35e', WebkitTextFillColor: '#f4d35e', backgroundColor: 'rgba(0,0,0,0.5)' }}
+            />
+          </div>
+
+          {isDraw && (
+            <div className="ko-penalty-section">
+              <div className="ko-penalty-label">
+                ⚠️ Jogo empatado — como foi decidido?
+              </div>
+              <div className="ko-tiebreak-mode">
+                <button
+                  className={(match.tiebreakMode || 'penalty') === 'extratime' ? 'active' : ''}
+                  onClick={() => updateKnockout(match.id, 'tiebreakMode', 'extratime')}
+                  disabled={locked}
+                >
+                  ⏱️ Prorrogação
+                </button>
+                <button
+                  className={(match.tiebreakMode || 'penalty') === 'penalty' ? 'active' : ''}
+                  onClick={() => updateKnockout(match.id, 'tiebreakMode', 'penalty')}
+                  disabled={locked}
+                >
+                  🥅 Pênaltis
+                </button>
+              </div>
+              <div className="ko-penalty-label" style={{ fontSize: 10, marginTop: 4 }}>
+                Quem avançou?
+              </div>
+              <div className="ko-penalty-buttons">
+                <button
+                  className={`ko-penalty-btn ${match.penaltyWinner === 'A' ? 'selected' : ''}`}
+                  onClick={() => updateKnockout(match.id, 'penaltyWinner', 'A')}
+                  disabled={locked}
+                >
+                  <span>{FLAGS[match.teamA]}</span>
+                  <span>{match.teamA}</span>
+                </button>
+                <button
+                  className={`ko-penalty-btn ${match.penaltyWinner === 'B' ? 'selected' : ''}`}
+                  onClick={() => updateKnockout(match.id, 'penaltyWinner', 'B')}
+                  disabled={locked}
+                >
+                  <span>{FLAGS[match.teamB]}</span>
+                  <span>{match.teamB}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {match.winnerTeam && (
+            <div className="ko-winner-tag">
+              <span>✓ Avança:</span>
+              <span>{FLAGS[match.winnerTeam]}</span>
+              <strong>{match.winnerTeam}</strong>
+              {isDraw && (
+                <span style={{ fontSize: 9, opacity: 0.7, marginLeft: 4 }}>
+                  ({(match.tiebreakMode || 'penalty') === 'extratime' ? 'PRORROG.' : 'PÊNALTIS'})
+                </span>
+              )}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// =====================================================================
+// RANKING PAGE
+// =====================================================================
+function RankingPage({ store }) {
+  const ranking = useMemo(() => {
+    const participants = Object.values(store.users).filter(u => !u.isAdmin);
+    const withPoints = participants.map(u => {
+      const { points, stats } = computeUserPoints(u, store.results);
+      return { ...u, points, stats };
+    });
+    withPoints.sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.stats.exact !== a.stats.exact) return b.stats.exact - a.stats.exact;
+      const champA = a.extras?.champion === store.results.champion ? 1 : 0;
+      const champB = b.extras?.champion === store.results.champion ? 1 : 0;
+      if (champB !== champA) return champB - champA;
+      return a.name.localeCompare(b.name);
+    });
+    return withPoints;
+  }, [store]);
+
+  const leader = ranking[0];
+  const totalParticipants = ranking.length;
+  const mostExact = ranking.length > 0 ? ranking.reduce((a, b) => (a.stats.exact > b.stats.exact ? a : b)) : null;
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-eyebrow">Classificação Geral</div>
+        <h1 className="page-title">Ranking</h1>
+        <p className="page-sub">Pontuação atualizada em tempo real conforme o admin lança os resultados oficiais.</p>
+      </div>
+
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-label">🥇 Líder</div>
+          <div className="stat-value" style={{ fontSize: 24 }}>{leader?.name?.split(' ')[0] || '—'}</div>
+          <div className="stat-meta">{leader ? `${leader.points} pontos` : 'Aguardando resultados'}</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">🎯 Mais Placares Exatos</div>
+          <div className="stat-value" style={{ fontSize: 24 }}>{mostExact?.name?.split(' ')[0] || '—'}</div>
+          <div className="stat-meta">{mostExact ? `${mostExact.stats.exact} acertos` : '—'}</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">👥 Participantes</div>
+          <div className="stat-value">{totalParticipants}</div>
+          <div className="stat-meta">cadastrados</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">⚽ Jogos finalizados</div>
+          <div className="stat-value">{Object.values(store.results.matches).filter(m => m.home !== '' && m.away !== '').length}</div>
+          <div className="stat-meta">de {FIXTURES.length}</div>
+        </div>
+      </div>
+
+      {ranking.length === 0 ? (
+        <div className="empty-state">
+          <div className="emoji">🏆</div>
+          <h3>Ranking ainda não disponível</h3>
+          <p>Quando o admin lançar os primeiros resultados, a pontuação aparecerá aqui.</p>
+        </div>
+      ) : (
+        <div className="ranking-card">
+          <div className="ranking-row head">
+            <div>Pos</div>
+            <div>Participante</div>
+            <div style={{ textAlign: 'right' }}>Pontos</div>
+            <div className="ranking-stat-label" style={{ textAlign: 'center' }}>Exatos</div>
+            <div className="ranking-stat-label" style={{ textAlign: 'center' }}>🎯 Sobrev.</div>
+          </div>
+          {ranking.map((u, idx) => (
+            <div key={u.username} className={`ranking-row ${idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : ''}`}>
+              <div className="ranking-pos">{idx + 1}°</div>
+              <div className="ranking-user">
+                <div className="ranking-avatar" style={{ background: getAvatarColor(u.name) }}>{getInitials(u.name)}</div>
+                <div>
+                  <div className="ranking-name">{u.name}</div>
+                  <div className="ranking-meta">@{u.username}</div>
+                </div>
+              </div>
+              <div className="ranking-points">{u.points}<span className="pts-suffix">PTS</span></div>
+              <div className="ranking-stat">
+                <div className="ranking-stat-value">{u.stats.exact}</div>
+                <div className="ranking-stat-label">exatos</div>
+              </div>
+              <div className="ranking-stat">
+                <div className="ranking-stat-value" style={{ color: u.stats.survivalBonus ? 'var(--purple)' : 'inherit' }}>
+                  +{u.stats.survivalBonus || 0}
+                </div>
+                <div className="ranking-stat-label">bônus</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =====================================================================
+// REGRAS PAGE
+// =====================================================================
+function RegrasPage() {
+  const cats = [
+    'Fase de Grupos',
+    'Mata-mata: Confronto',
+    'Mata-mata: Bônus',
+    'Mata-mata: Placar Exato',
+    'Bônus por Sobrevivência',
+    'Classificação Final',
+  ];
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-eyebrow">Como Funciona</div>
+        <h1 className="page-title">Regras do Bolão</h1>
+      </div>
+
+      <div className="rule-card" style={{ marginBottom: 16, background: 'rgba(0,240,255,0.04)', borderColor: 'rgba(0,240,255,0.2)' }}>
+        <h4 style={{ color: 'var(--neon)' }}>💡 Como funciona o mata-mata</h4>
+        <p style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--text-dim)' }}>
+          Como vocês palpitam ANTES da Copa começar, no mata-mata você ganha pontos por <strong>3 níveis de acerto</strong>:<br/><br/>
+          <strong style={{color: 'var(--gold)'}}>🎯 Confronto</strong> (acertou os 2 times do jogo) → pontuação BASE<br/>
+          <strong style={{color: 'var(--gold)'}}>+ Vencedor</strong> (acertou também quem ganhou ou empate) → bônus médio<br/>
+          <strong style={{color: 'var(--gold)'}}>+ Placar exato</strong> (cravou o placar dos 90 min) → bônus máximo<br/><br/>
+          Os bônus se acumulam quanto mais avançada a fase! Cravar a final vale até <strong style={{color: 'var(--gold-bright)'}}>14 + 5 + 8 = 27 pontos</strong>.
+        </p>
+      </div>
+
+      <div className="rule-card" style={{ marginBottom: 16, background: 'rgba(168,85,247,0.05)', borderColor: 'rgba(168,85,247,0.3)' }}>
+        <h4 style={{ color: 'var(--purple)' }}>🎯 Bônus por Sobrevivência (NOVO!)</h4>
+        <p style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--text-dim)' }}>
+          Errou a CHAVE do Brasil mas ele chegou às quartas mesmo assim? <strong style={{color: 'var(--gold)'}}>Você ainda ganha pontos!</strong><br/><br/>
+          Para cada time que VOCÊ palpitou em determinada fase E ele realmente chegou lá (independente do confronto):<br/>
+          <strong style={{color: 'var(--gold)'}}>Oitavas</strong> (16 times): +1 pt cada → até <strong>+16 pts</strong><br/>
+          <strong style={{color: 'var(--gold)'}}>Quartas</strong> (8 times): +2 pts cada → até <strong>+16 pts</strong><br/>
+          <strong style={{color: 'var(--gold)'}}>Semis</strong> (4 times): +3 pts cada → até <strong>+12 pts</strong><br/>
+          <strong style={{color: 'var(--gold)'}}>Final</strong> (2 times): +5 pts cada → até <strong>+10 pts</strong><br/><br/>
+          Esse bônus <strong style={{color: 'var(--gold-bright)'}}>recompensa o feeling</strong> de quem sabe quais seleções vão longe, mesmo errando os confrontos.
+        </p>
+      </div>
+
+      <div className="rules-grid">
+        {cats.map(cat => (
+          <div key={cat} className="rule-card">
+            <h4>{cat}</h4>
+            {RULES.filter(r => r.cat === cat).map(r => (
+              <div key={r.label} className="rule-row">
+                <span>{r.label}</span>
+                <span className="rule-points">+{r.pts}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      <div className="section-title">📌 Regras Gerais</div>
+      <div className="rule-card">
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          <li style={{ padding: '8px 0', borderBottom: '1px dashed rgba(255,255,255,0.05)' }}>
+            🎉 <strong>Participação gratuita!</strong> Basta criar sua conta e começar a palpitar.
+          </li>
+          <li style={{ padding: '8px 0', borderBottom: '1px dashed rgba(255,255,255,0.05)' }}>
+            ⏰ <strong>Prazo máximo:</strong> até <strong style={{color: 'var(--gold)'}}>10/06/2026 às 23:59</strong>.
+          </li>
+          <li style={{ padding: '8px 0', borderBottom: '1px dashed rgba(255,255,255,0.05)' }}>
+            🔒 <strong>Bloqueio automático:</strong> Todos os palpites ficam definitivos após o prazo (10/06/2026 às 23:59). Não dá pra editar mais depois.
+          </li>
+          <li style={{ padding: '8px 0' }}>
+            🚫 Após o prazo, não serão aceitos novos palpites ou alterações.
+          </li>
+        </ul>
+      </div>
+
+      <div className="section-title">🎯 Critérios de Desempate</div>
+      <div className="rule-card">
+        <ol style={{ paddingLeft: 20 }}>
+          <li style={{ padding: '6px 0' }}>Maior número de placares <strong>exatos</strong></li>
+          <li style={{ padding: '6px 0' }}>Maior número de acertos do <strong>campeão</strong></li>
+          <li style={{ padding: '6px 0' }}>Maior número de acertos no <strong>mata-mata</strong></li>
+          <li style={{ padding: '6px 0' }}>Divisão da premiação</li>
+        </ol>
+      </div>
+    </div>
+  );
+}
+
+// =====================================================================
+// ADMIN PAGE
+// =====================================================================
+function AdminPage({ store, updateOfficialResult, updateOfficialExtra, updateOfficialKnockout, deleteUser, showToast, syncWithEspn, espnSyncing, espnLastSync }) {
+  const [section, setSection] = useState('participantes');
+
+  const participants = Object.values(store.users).filter(u => !u.isAdmin);
+
+  const officialStandings = useMemo(() => {
+    const std = {};
+    Object.keys(GROUPS).forEach(g => {
+      std[g] = calcStandings(store.results.matches, g).map(r => r.team);
+    });
+    return std;
+  }, [store.results.matches]);
+
+  const exportRanking = () => {
+    const ranking = participants.map(u => {
+      const { points, stats } = computeUserPoints(u, store.results);
+      return { name: u.name, username: u.username, whatsapp: u.whatsapp || '', points, exact: stats.exact, winner: stats.winner };
+    }).sort((a, b) => b.points - a.points);
+    const csv = ['Pos,Nome,Usuário,WhatsApp,Pontos,Exatos,Vencedor', ...ranking.map((r, i) =>
+      `${i+1},"${r.name}",${r.username},${r.whatsapp},${r.points},${r.exact},${r.winner}`)].join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `bolao-fifa-2026-ranking-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    showToast('Ranking exportado');
+  };
+
+  const exportAllPredictions = () => {
+    const rows = [['Usuário', 'Nome', 'JogoID', 'Casa', 'Placar Casa', 'Visitante', 'Placar Visit.']];
+    participants.forEach(u => {
+      FIXTURES.forEach(fix => {
+        const p = u.predictions?.[fix.id];
+        if (p) rows.push([u.username, u.name, fix.id, fix.home, p.home, fix.away, p.away]);
+      });
+    });
+    const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `bolao-palpites-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    showToast('Palpites exportados');
+  };
+
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-eyebrow" style={{ color: 'var(--red)' }}>Área Restrita</div>
+        <h1 className="page-title">Painel do Administrador</h1>
+      </div>
+
+      <div className="admin-warning">
+        <strong>⚠️ Atenção:</strong> Esta área é apenas para o organizador. Todas as alterações são salvas automaticamente e impactam o ranking em tempo real.
+      </div>
+
+      <div className="stats-grid">
+        <div className="stat-card"><div className="stat-label">Total Cadastrados</div><div className="stat-value">{participants.length}</div></div>
+        <div className="stat-card"><div className="stat-label">Resultados Lançados</div><div className="stat-value">{Object.values(store.results.matches).filter(m => m.home !== '' && m.away !== '').length}</div></div>
+      </div>
+
+      <div className="tabs">
+        <button className={`tab ${section === 'participantes' ? 'active' : ''}`} onClick={() => setSection('participantes')}>Participantes</button>
+        <button className={`tab ${section === 'resultados' ? 'active' : ''}`} onClick={() => setSection('resultados')}>Resultados Grupos</button>
+        <button className={`tab ${section === 'matamata' ? 'active' : ''}`} onClick={() => setSection('matamata')}>Mata-Mata</button>
+        <button className={`tab ${section === 'finais' ? 'active' : ''}`} onClick={() => setSection('finais')}>Top 4 + Artilheiro</button>
+        <button className={`tab ${section === 'exportar' ? 'active' : ''}`} onClick={() => setSection('exportar')}>Exportar</button>
+      </div>
+
+      {section === 'participantes' && (
+        <div className="admin-section">
+          <h3>Lista de Participantes</h3>
+          {participants.length === 0 ? (
+            <p style={{ color: 'var(--text-muted)' }}>Nenhum participante cadastrado ainda.</p>
+          ) : (
+            <table className="participants-table">
+              <thead>
+                <tr><th>Nome</th><th>Usuário</th><th>WhatsApp</th><th>Cadastro</th><th>Ação</th></tr>
+              </thead>
+              <tbody>
+                {participants.map(u => (
+                  <tr key={u.username}>
+                    <td><strong>{u.name}</strong></td>
+                    <td>@{u.username}</td>
+                    <td>{u.whatsapp || '—'}</td>
+                    <td style={{ fontSize: 11, color: 'var(--text-muted)' }}>{u.createdAt ? new Date(u.createdAt).toLocaleDateString('pt-BR') : '—'}</td>
+                    <td><button className="btn-ghost" style={{padding: '4px 10px', fontSize: 11}} onClick={() => deleteUser(u.username)}>Remover</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {section === 'resultados' && (
+        <div className="admin-section">
+          <h3>Lançar Resultados Oficiais dos Jogos</h3>
+          <p style={{ color: 'var(--text-dim)', fontSize: 13, marginBottom: 16 }}>
+            Conforme o jogo termina, lance aqui o placar oficial. O ranking se atualiza automaticamente.
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 20 }}>
+            <button
+              className="btn-primary"
+              disabled={espnSyncing}
+              onClick={() => syncWithEspn(false)}
+              style={{ opacity: espnSyncing ? 0.7 : 1 }}
+            >
+              {espnSyncing ? '🔄 Sincronizando...' : '🔄 Sincronizar com ESPN'}
+            </button>
+            <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>
+              {espnLastSync
+                ? `Última sincronização: ${espnLastSync.toLocaleTimeString('pt-BR')} (automática a cada 3 min enquanto este painel estiver aberto)`
+                : 'Busca os placares da fase de grupos direto da ESPN (gratuito, sem chave de API).'}
+            </span>
+          </div>
+          {Object.keys(GROUPS).map(g => (
+            <div key={g} className="group-section">
+              <div className="group-header">
+                <div className="group-badge">{g}</div>
+                <div className="group-title">Grupo {g}</div>
+              </div>
+              <div className="match-list">
+                {FIXTURES.filter(f => f.group === g).map(fix => (
+                  <MatchCard key={fix.id} fix={fix} pred={store.results.matches[fix.id]}
+                    update={updateOfficialResult} isAdmin={true} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {section === 'matamata' && (
+        <AdminKnockoutSection store={store} updateOfficialKnockout={updateOfficialKnockout} />
+      )}
+
+      {section === 'finais' && (
+        <div className="admin-section">
+          <h3>Top 4 Oficiais + Artilheiro</h3>
+          <div className="extra-picks">
+            <div className="pick-card">
+              <div className="pick-label">🥇 Campeão</div>
+              <select className="pick-select" value={store.results.champion || ''} onChange={(e) => updateOfficialExtra('champion', e.target.value)}>
+                <option value="">— Defina —</option>
+                {ALL_TEAMS.map(t => <option key={t} value={t}>{FLAGS[t]} {t}</option>)}
+              </select>
+            </div>
+            <div className="pick-card">
+              <div className="pick-label">🥈 Vice</div>
+              <select className="pick-select" value={store.results.vice || ''} onChange={(e) => updateOfficialExtra('vice', e.target.value)}>
+                <option value="">— Defina —</option>
+                {ALL_TEAMS.map(t => <option key={t} value={t}>{FLAGS[t]} {t}</option>)}
+              </select>
+            </div>
+            <div className="pick-card">
+              <div className="pick-label">🥉 3º colocado</div>
+              <select className="pick-select" value={store.results.third || ''} onChange={(e) => updateOfficialExtra('third', e.target.value)}>
+                <option value="">— Defina —</option>
+                {ALL_TEAMS.map(t => <option key={t} value={t}>{FLAGS[t]} {t}</option>)}
+              </select>
+            </div>
+            <div className="pick-card">
+              <div className="pick-label">4º colocado</div>
+              <select className="pick-select" value={store.results.fourth || ''} onChange={(e) => updateOfficialExtra('fourth', e.target.value)}>
+                <option value="">— Defina —</option>
+                {ALL_TEAMS.map(t => <option key={t} value={t}>{FLAGS[t]} {t}</option>)}
+              </select>
+            </div>
+            <div className="pick-card">
+              <div className="pick-label">⚽ Artilheiro</div>
+              <input className="pick-input" value={store.results.topScorer || ''}
+                onChange={(e) => updateOfficialExtra('topScorer', e.target.value)}
+                placeholder="Nome oficial" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {section === 'exportar' && (
+        <div className="admin-section">
+          <h3>Exportar Dados</h3>
+          <p style={{ color: 'var(--text-dim)', fontSize: 13, marginBottom: 16 }}>
+            Baixe arquivos CSV com as informações do bolão (abre no Excel/Google Sheets).
+          </p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <button className="btn-primary" style={{ width: 'auto' }} onClick={exportRanking}>📊 Exportar Ranking</button>
+            <button className="btn-secondary" onClick={exportAllPredictions}>📋 Exportar Todos os Palpites</button>
+          </div>
+
+          <div style={{ marginTop: 30, padding: 14, background: 'rgba(0,0,0,0.3)', borderRadius: 10, border: '1px solid var(--line)' }}>
+            <h4 style={{ fontFamily: 'Bebas Neue', fontSize: 16, color: 'var(--gold)', marginBottom: 8 }}>☁️ DADOS SINCRONIZADOS</h4>
+            <p style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 10 }}>
+              Seus dados estão salvos com segurança no banco de dados online (Supabase). Todos os usuários e palpites ficam sincronizados em tempo real entre todos os dispositivos.
+            </p>
+            <button className="btn-secondary" onClick={() => {
+              const blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url; a.download = `bolao-backup-${new Date().toISOString().slice(0,10)}.json`;
+              a.click();
+              showToast('Backup exportado');
+            }}>💾 Baixar Backup JSON (todos os dados)</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =====================================================================
+// ADMIN KNOCKOUT SECTION
+// =====================================================================
+function AdminKnockoutSection({ store, updateOfficialKnockout }) {
+  const [activePhase, setActivePhase] = useState('R32');
+  const [viewMode, setViewMode] = useState('visual');
+  const [editingMatchId, setEditingMatchId] = useState(null);
+
+  const allKO = useMemo(() => {
+    return resolveAllKnockout(store.results.matches || {}, store.results.knockout || {});
+  }, [store.results.matches, store.results.knockout]);
+
+  const phaseStats = useMemo(() => {
+    const out = {};
+    KO_PHASE_ORDER.forEach(phase => {
+      const matches = allKO[phase] || [];
+      out[phase] = {
+        total: matches.length,
+        filled: matches.filter(m => m.winnerTeam).length,
+      };
+    });
+    return out;
+  }, [allKO]);
+
+  const findMatchById = (id) => {
+    for (const phase of KO_PHASE_ORDER) {
+      const m = (allKO[phase] || []).find(mm => mm.id === id);
+      if (m) return { ...m, phase };
+    }
+    return null;
+  };
+  const editingMatch = editingMatchId ? findMatchById(editingMatchId) : null;
+
+  const allMatchesFlat = useMemo(() => {
+    const flat = [];
+    KO_PHASE_ORDER.forEach(phase => {
+      (allKO[phase] || []).forEach(m => flat.push({ ...m, phase }));
+    });
+    return flat;
+  }, [allKO]);
+  const currentIdx = editingMatchId ? allMatchesFlat.findIndex(m => m.id === editingMatchId) : -1;
+  const prevMatch = currentIdx > 0 ? allMatchesFlat[currentIdx - 1] : null;
+  const nextMatch = currentIdx >= 0 && currentIdx < allMatchesFlat.length - 1 ? allMatchesFlat[currentIdx + 1] : null;
+
+  return (
+    <div className="admin-section">
+      <h3>Resultados Oficiais — Mata-Mata</h3>
+      <p style={{ color: 'var(--text-dim)', fontSize: 13, marginBottom: 16 }}>
+        Lance aqui os placares oficiais dos jogos eliminatórios. Em caso de empate, escolha quem avança nos pênaltis. Os vencedores aparecem automaticamente na próxima fase.
+      </p>
+
+      <div className="bracket-toggle">
+        <button
+          className={`bracket-toggle-btn ${viewMode === 'visual' ? 'active' : ''}`}
+          onClick={() => setViewMode('visual')}
+        >
+          🏆 Chaveamento
+        </button>
+        <button
+          className={`bracket-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+          onClick={() => setViewMode('list')}
+        >
+          📋 Por Fase
+        </button>
+      </div>
+
+      {viewMode === 'visual' && (
+        <BracketVisual allKO={allKO} onMatchClick={setEditingMatchId} />
+      )}
+
+      {viewMode === 'list' && (
+        <>
+          <div className="ko-phases-nav">
+            {KO_PHASE_ORDER.map(phase => {
+              const info = KO_PHASE_INFO[phase];
+              const stats = phaseStats[phase];
+              const done = stats.filled === stats.total && stats.total > 0;
+              return (
+                <button
+                  key={phase}
+                  className={`ko-phase-btn ${activePhase === phase ? 'active' : ''} ${done ? 'done' : ''}`}
+                  onClick={() => setActivePhase(phase)}
+                >
+                  <span>{info.icon} {info.shortLabel}</span>
+                  <span className="badge-mini">{stats.filled}/{stats.total}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <KoPhaseSection
+            phase={activePhase}
+            matches={allKO[activePhase] || []}
+            updateKnockout={updateOfficialKnockout}
+            isAdmin={true}
+          />
+        </>
+      )}
+
+      {editingMatch && (
+        <BracketEditModal
+          match={editingMatch}
+          updateKnockout={updateOfficialKnockout}
+          isAdmin={true}
+          onClose={() => setEditingMatchId(null)}
+          onPrev={prevMatch ? () => setEditingMatchId(prevMatch.id) : null}
+          onNext={nextMatch ? () => setEditingMatchId(nextMatch.id) : null}
+        />
+      )}
+    </div>
+  );
+}
+
+// =====================================================================
+// RENDER
+// =====================================================================
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
