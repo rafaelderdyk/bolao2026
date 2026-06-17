@@ -1,5 +1,5 @@
 // =====================================================================
-// sync-espn.mjs
+// scripts/sync-espn.mjs
 // Busca os placares da fase de grupos na ESPN (API pública, gratuita)
 // e grava direto na tabela `bolao_results` do Supabase via REST.
 //
