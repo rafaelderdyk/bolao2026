@@ -1,4 +1,4 @@
-name: .github/workflows/Sync resultados ESPN -> Supabase
+name: Sync resultados ESPN -> Supabase
 
 on:
   schedule:
