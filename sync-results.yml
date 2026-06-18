@@ -1,0 +1,25 @@
+name: Sync resultados ESPN -> Supabase
+
+on:
+  schedule:
+    # A cada 30 minutos durante a janela de jogos da Copa (13h-04h UTC = 10h-01h Brasília)
+    - cron: '*/30 13-23,0-4 * * *'
+    # Fallback: 1x/dia às 06:00 UTC, fora da janela de jogos
+    - cron: '0 6 * * *'
+  workflow_dispatch: {} # permite rodar manualmente em Actions > Run workflow
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sincronizar placares com o Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: node scripts/sync-espn.mjs
